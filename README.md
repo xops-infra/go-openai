@@ -204,11 +204,7 @@ import (
 	"context"
 	"fmt"
 
-<<<<<<< HEAD
 	openai "github.com/patsnapops/go-openai"
-=======
-	openai "github.com/sashabaranov/go-openai"
->>>>>>> upstream/master
 )
 
 func main() {
