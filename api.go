@@ -7,11 +7,14 @@ import (
 	"net/http"
 )
 
+const defaultPlatform = "openai"
+
 // Client is OpenAI GPT-3 API client.
 type Client struct {
 	config ClientConfig
 
 	requestBuilder requestBuilder
+	platform       string
 }
 
 // NewClient creates new OpenAI API client.
@@ -25,6 +28,7 @@ func NewClientWithConfig(config ClientConfig) *Client {
 	return &Client{
 		config:         config,
 		requestBuilder: newRequestBuilder(),
+		platform:       defaultPlatform,
 	}
 }
 
@@ -37,9 +41,35 @@ func NewOrgClient(authToken, org string) *Client {
 	return NewClientWithConfig(config)
 }
 
+func (c *Client) WithCustomHttpClient(client *http.Client) *Client {
+	c.config.HTTPClient = client
+	return c
+}
+
+func (c *Client) SwitchAzure() *Client {
+	c.platform = "azure"
+	return c
+}
+
+func (c *Client) WithNewAzureClient(resourceName, deploymentName, apiVersion string) *Client {
+	c.platform = "azure"
+	c.config.DeploymentName = deploymentName
+	c.config.ResourceName = resourceName
+	if apiVersion == "" {
+		apiVersion = defaultApiVersion
+	}
+	c.config.ApiVersion = apiVersion
+	c.config.BaseURL = azureApiURLv1
+	return c
+}
+
 func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	req.Header.Set("Accept", "application/json; charset=utf-8")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.config.authToken))
+	if c.platform == "openai" {
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.config.authToken))
+	} else {
+		req.Header.Set("api-key", c.config.authToken)
+	}
 
 	// Check whether Content-Type is already set, Upload Files API requires
 	// Content-Type == multipart/form-data
@@ -83,7 +113,16 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 }
 
 func (c *Client) fullURL(suffix string) string {
-	return fmt.Sprintf("%s%s", c.config.BaseURL, suffix)
+	var url string
+	switch c.platform {
+	case "azure":
+		url = fmt.Sprintf("https://%s%s%s%s?api-version=%s",
+			c.config.ResourceName, c.config.BaseURL,
+			c.config.DeploymentName, suffix, c.config.ApiVersion)
+	default:
+		url = fmt.Sprintf("%s%s", c.config.BaseURL, suffix)
+	}
+	return url
 }
 
 func (c *Client) newStreamRequest(

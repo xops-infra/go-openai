@@ -83,8 +83,8 @@ type CompletionRequest struct {
 	Prompt           string         `json:"prompt,omitempty"`
 	Suffix           string         `json:"suffix,omitempty"`
 	MaxTokens        int            `json:"max_tokens,omitempty"`
-	Temperature      float32        `json:"temperature,omitempty"`
-	TopP             float32        `json:"top_p,omitempty"`
+	Temperature      *float32       `json:"temperature,omitempty"`
+	TopP             *float32       `json:"top_p,omitempty"`
 	N                int            `json:"n,omitempty"`
 	Stream           bool           `json:"stream,omitempty"`
 	LogProbs         int            `json:"logprobs,omitempty"`

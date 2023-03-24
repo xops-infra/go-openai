@@ -180,3 +180,23 @@ func TestRequestError(t *testing.T) {
 func numTokens(s string) int {
 	return int(float32(len(s)) / 4)
 }
+
+func TestUseAzure(t *testing.T) {
+	var temp float32 = 0
+	client := NewClient("xx").WithNewAzureClient("xx", "xx", "")
+	req := ChatCompletionRequest{
+		Model: GPT3Dot5Turbo,
+		Messages: []ChatCompletionMessage{
+			{
+				Content: "怎么提升玻璃强度，请给我三点建议，同时返回结果保存在json中",
+				Role:    ChatMessageRoleUser,
+			},
+		},
+		Temperature: &temp,
+	}
+	completion, err := client.CreateChatCompletion(context.Background(), req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(completion)
+}

@@ -6,10 +6,11 @@ import (
 
 const (
 	apiURLv1                       = "https://api.openai.com/v1"
+	azureApiURLv1                  = ".openai.azure.com/openai/deployments/"
 	defaultEmptyMessagesLimit uint = 300
+	defaultApiVersion              = "2023-03-15-preview"
 )
 
-// ClientConfig is a configuration of a client.
 type ClientConfig struct {
 	authToken string
 
@@ -19,6 +20,11 @@ type ClientConfig struct {
 	OrgID   string
 
 	EmptyMessagesLimit uint
+
+	// azure
+	ResourceName   string
+	DeploymentName string
+	ApiVersion     string
 }
 
 func DefaultConfig(authToken string) ClientConfig {

@@ -5,7 +5,7 @@
 
 > **Note**: the repository was fork from sashabaranov/go-openai,The purpose is to support Azure simultaneously.
 
-This library provides Go clients for [OpenAI API](https://platform.openai.com/). We support:
+This library provides Go clients for [OpenAI API](https://platform.openai.com/) and Azure.  We support:
 
 * ChatGPT
 * GPT-3, GPT-4

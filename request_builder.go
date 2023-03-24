@@ -30,7 +30,6 @@ func (b *httpRequestBuilder) build(ctx context.Context, method, url string, requ
 	if err != nil {
 		return nil, err
 	}
-
 	return http.NewRequestWithContext(
 		ctx,
 		method,
