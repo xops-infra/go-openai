@@ -3,6 +3,7 @@ package openai_test
 import (
 	. "github.com/patsnapops/go-openai"
 	"github.com/patsnapops/go-openai/internal/test"
+	"github.com/patsnapops/go-openai/internal/test/checks"
 
 	"context"
 	"encoding/json"
@@ -27,9 +28,7 @@ func TestListModels(t *testing.T) {
 	ctx := context.Background()
 
 	_, err = client.ListModels(ctx)
-	if err != nil {
-		t.Fatalf("ListModels error: %v", err)
-	}
+	checks.NoError(t, err, "ListModels error")
 }
 
 // handleModelsEndpoint Handles the models endpoint by the test server.
