@@ -22,7 +22,7 @@ func (e EmbeddingModel) MarshalText() ([]byte, error) {
 // UnmarshalText implements the encoding.TextUnmarshaler interface.
 // On unrecognized value, it sets |e| to Unknown.
 func (e *EmbeddingModel) UnmarshalText(b []byte) error {
-	if val, ok := stringToEnum[(string(b))]; ok {
+	if val, ok := StringToEnum[(string(b))]; ok {
 		*e = val
 		return nil
 	}
@@ -73,7 +73,7 @@ var enumToString = map[EmbeddingModel]string{
 	AdaEmbeddingV2:        "text-embedding-ada-002",
 }
 
-var stringToEnum = map[string]EmbeddingModel{
+var StringToEnum = map[string]EmbeddingModel{
 	"text-similarity-ada-001":       AdaSimilarity,
 	"text-similarity-babbage-001":   BabbageSimilarity,
 	"text-similarity-curie-001":     CurieSimilarity,
