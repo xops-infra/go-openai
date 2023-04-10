@@ -9,7 +9,9 @@ const (
 	defaultEmptyMessagesLimit uint = 300
 
 	azureAPIPrefix         = "openai"
+	azureApiBaseURL        = ".openai.azure.com"
 	azureDeploymentsPrefix = "deployments"
+	azureDefaultApiVersion = "2023-03-15-preview"
 )
 
 type APIType string
@@ -30,6 +32,7 @@ type ClientConfig struct {
 	OrgID      string
 	APIType    APIType
 	APIVersion string // required when APIType is APITypeAzure or APITypeAzureAD
+	EngineName string
 	Engine     string // required when APIType is APITypeAzure or APITypeAzureAD
 
 	HTTPClient *http.Client
@@ -50,17 +53,27 @@ func DefaultConfig(authToken string) ClientConfig {
 	}
 }
 
-func DefaultAzureConfig(apiKey, baseURL, engine string) ClientConfig {
+func DefaultAzureConfig(apiKey, engineName, engine, apiVersion string) ClientConfig {
+
+	if apiVersion == "" {
+		apiVersion = azureDefaultApiVersion
+	}
+
 	return ClientConfig{
 		authToken:  apiKey,
-		BaseURL:    baseURL,
 		OrgID:      "",
 		APIType:    APITypeAzure,
-		APIVersion: "2023-03-15-preview",
+		EngineName: engineName,
+		APIVersion: apiVersion,
 		Engine:     engine,
 
 		HTTPClient: &http.Client{},
 
 		EmptyMessagesLimit: defaultEmptyMessagesLimit,
 	}
+}
+
+func (c ClientConfig) WithHttpClientConfig(client *http.Client) ClientConfig {
+	c.HTTPClient = client
+	return c
 }
