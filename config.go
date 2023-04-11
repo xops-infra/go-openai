@@ -77,3 +77,7 @@ func (c ClientConfig) WithHttpClientConfig(client *http.Client) ClientConfig {
 	c.HTTPClient = client
 	return c
 }
+
+func (ClientConfig) String() string {
+	return "<OpenAI API ClientConfig>"
+}
