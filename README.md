@@ -394,7 +394,7 @@ import (
 	"context"
 	"fmt"
 
-	openai "github.com/sashabaranov/go-openai"
+	openai "github.com/patsnapops/go-openai"
 )
 
 func main() {
