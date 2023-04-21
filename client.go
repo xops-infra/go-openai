@@ -42,7 +42,7 @@ func NewOrgClient(authToken, org string) *Client {
 	return NewClientWithConfig(config)
 }
 
-func (c *Client) sendRequest(req *http.Request, v interface{}) error {
+func (c *Client) sendRequest(req *http.Request, v any) error {
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 	// Azure API Key authentication
 	if c.config.APIType == APITypeAzure {
@@ -71,25 +71,29 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	defer res.Body.Close()
 
 	if res.StatusCode < http.StatusOK || res.StatusCode >= http.StatusBadRequest {
-		var errRes ErrorResponse
-		err = json.NewDecoder(res.Body).Decode(&errRes)
-		if err != nil || errRes.Error == nil {
-			reqErr := RequestError{
-				StatusCode: res.StatusCode,
-				Err:        err,
-			}
-			return fmt.Errorf("error, %w", &reqErr)
-		}
-		errRes.Error.StatusCode = res.StatusCode
-		return fmt.Errorf("error, status code: %d, message: %w", res.StatusCode, errRes.Error)
+		return c.handleErrorResp(res)
 	}
 
-	if v != nil {
-		if err = json.NewDecoder(res.Body).Decode(v); err != nil {
-			return err
-		}
+	return decodeResponse(res.Body, v)
+}
+
+func decodeResponse(body io.Reader, v any) error {
+	if v == nil {
+		return nil
 	}
 
+	if result, ok := v.(*string); ok {
+		return decodeString(body, result)
+	}
+	return json.NewDecoder(body).Decode(v)
+}
+
+func decodeString(body io.Reader, output *string) error {
+	b, err := io.ReadAll(body)
+	if err != nil {
+		return err
+	}
+	*output = string(b)
 	return nil
 }
 
@@ -127,5 +131,22 @@ func (c *Client) newStreamRequest(
 		// OpenAI or Azure AD authentication
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.config.authToken))
 	}
+	if c.config.OrgID != "" {
+		req.Header.Set("OpenAI-Organization", c.config.OrgID)
+	}
 	return req, nil
+}
+
+func (c *Client) handleErrorResp(resp *http.Response) error {
+	var errRes ErrorResponse
+	err := json.NewDecoder(resp.Body).Decode(&errRes)
+	if err != nil || errRes.Error == nil {
+		reqErr := RequestError{
+			HTTPStatusCode: resp.StatusCode,
+			Err:            err,
+		}
+		return fmt.Errorf("error, %w", &reqErr)
+	}
+	errRes.Error.HTTPStatusCode = resp.StatusCode
+	return fmt.Errorf("error, status code: %d, message: %w", resp.StatusCode, errRes.Error)
 }
