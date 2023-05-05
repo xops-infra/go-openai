@@ -35,6 +35,7 @@ const (
 	GPT3Curie               = "curie"
 	GPT3Ada                 = "ada"
 	GPT3Babbage             = "babbage"
+	GPT3FineTuneCurie       = "curie:ft-patsnapdev-2023-05-04-10-10-23"
 )
 
 // Codex Defines the models provided by OpenAI.
@@ -71,6 +72,7 @@ var disabledModelsForEndpoints = map[string]map[string]bool{
 		GPT3Curie:               true,
 		GPT3Ada:                 true,
 		GPT3Babbage:             true,
+		GPT3FineTuneCurie:       true,
 	},
 }
 
