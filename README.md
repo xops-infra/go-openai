@@ -226,6 +226,47 @@ func main() {
 </details>
 
 <details>
+<summary>Audio Captions</summary>
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	openai "github.com/sashabaranov/go-openai"
+)
+
+func main() {
+	c := openai.NewClient(os.Getenv("OPENAI_KEY"))
+
+	req := openai.AudioRequest{
+		Model:    openai.Whisper1,
+		FilePath: os.Args[1],
+		Format:   openai.AudioResponseFormatSRT,
+	}
+	resp, err := c.CreateTranscription(context.Background(), req)
+	if err != nil {
+		fmt.Printf("Transcription error: %v\n", err)
+		return
+	}
+	f, err := os.Create(os.Args[1] + ".srt")
+	if err != nil {
+		fmt.Printf("Could not open file: %v\n", err)
+		return
+	}
+	defer f.Close()
+	if _, err := f.WriteString(resp.Text); err != nil {
+		fmt.Printf("Error writing to file: %v\n", err)
+		return
+	}
+}
+```
+</details>
+
+<details>
 <summary>DALL-E 2 image generation</summary>
 
 ```go
@@ -380,6 +421,46 @@ func main() {
 		})
 		fmt.Println(content)
 	}
+}
+```
+</details>
+
+<details>
+<summary>Azure OpenAI ChatGPT</summary>
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	openai "github.com/patsnapops/go-openai"
+)
+
+func main() {
+
+	config := openai.DefaultAzureConfig("your Azure OpenAI Key", "https://your Azure OpenAI Endpoint ", "your Model deployment name")
+	client := openai.NewClientWithConfig(config)
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "Hello Azure OpenAI!",
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		fmt.Printf("ChatCompletion error: %v\n", err)
+		return
+	}
+
+	fmt.Println(resp.Choices[0].Message.Content)
 }
 ```
 </details>
