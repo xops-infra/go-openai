@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 // Client is OpenAI GPT-3 API client.
@@ -100,8 +101,16 @@ func decodeString(body io.Reader, output *string) error {
 func (c *Client) fullURL(suffix string) string {
 	// /openai/deployments/{engine}/chat/completions?api-version={api_version}
 	if c.config.APIType == APITypeAzure || c.config.APIType == APITypeAzureAD {
-		return fmt.Sprintf("https://%s%s/%s/%s/%s%s?api-version=%s",
-			c.config.EngineName, azureApiBaseURL, azureAPIPrefix, azureDeploymentsPrefix, c.config.Engine, suffix, c.config.APIVersion)
+
+		baseURL := c.config.BaseURL
+		baseURL = strings.TrimRight(baseURL, "/")
+		// if suffix is /models change to {endpoint}/openai/models?api-version=2022-12-01
+		// https://learn.microsoft.com/en-us/rest/api/cognitiveservices/azureopenaistable/models/list?tabs=HTTP
+		if strings.Contains(suffix, "/models") {
+			return fmt.Sprintf("%s/%s%s?api-version=%s", baseURL, azureAPIPrefix, suffix, c.config.APIVersion)
+		}
+		return fmt.Sprintf("%s/%s/%s/%s%s?api-version=%s",
+			baseURL, azureAPIPrefix, azureDeploymentsPrefix, c.config.Engine, suffix, c.config.APIVersion)
 	}
 
 	// c.config.APIType == APITypeOpenAI || c.config.APIType == ""
@@ -141,12 +150,16 @@ func (c *Client) handleErrorResp(resp *http.Response) error {
 	var errRes ErrorResponse
 	err := json.NewDecoder(resp.Body).Decode(&errRes)
 	if err != nil || errRes.Error == nil {
-		reqErr := RequestError{
+		reqErr := &RequestError{
 			HTTPStatusCode: resp.StatusCode,
 			Err:            err,
 		}
-		return fmt.Errorf("error, %w", &reqErr)
+		if errRes.Error != nil {
+			reqErr.Err = errRes.Error
+		}
+		return reqErr
 	}
+
 	errRes.Error.HTTPStatusCode = resp.StatusCode
-	return fmt.Errorf("error, status code: %d, message: %w", resp.StatusCode, errRes.Error)
+	return errRes.Error
 }
