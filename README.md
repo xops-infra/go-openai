@@ -5,7 +5,7 @@
 
 > **Note**: the repository was fork from sashabaranov/go-openai,The purpose is to support Azure simultaneously.
 
-This library provides Go clients for [OpenAI API](https://platform.openai.com/) and Azure.  We support:
+This library provides unofficial Go clients for [OpenAI API](https://platform.openai.com/). We support: 
 
 * ChatGPT
 * GPT-3, GPT-4
@@ -234,7 +234,7 @@ import (
 	"fmt"
 	"os"
 
-	openai "github.com/sashabaranov/go-openai"
+	openai "github.com/patsnapops/go-openai"
 )
 
 func main() {
@@ -437,8 +437,15 @@ import (
 )
 
 func main() {
+	config := openai.DefaultAzureConfig("your Azure OpenAI Key", "https://your Azure OpenAI Endpoint")
+	// If you use a deployment name different from the model name, you can customize the AzureModelMapperFunc function
+	// config.AzureModelMapperFunc = func(model string) string {
+	// 	azureModelMapping = map[string]string{
+	// 		"gpt-3.5-turbo": "your gpt-3.5-turbo deployment name",
+	// 	}
+	// 	return azureModelMapping[model]
+	// }
 
-	config := openai.DefaultAzureConfig("your Azure OpenAI Key", "https://your Azure OpenAI Endpoint ", "your Model deployment name")
 	client := openai.NewClientWithConfig(config)
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
@@ -452,13 +459,61 @@ func main() {
 			},
 		},
 	)
-
 	if err != nil {
 		fmt.Printf("ChatCompletion error: %v\n", err)
 		return
 	}
 
 	fmt.Println(resp.Choices[0].Message.Content)
+}
+
+```
+</details>
+
+<details>
+<summary>Azure OpenAI Embeddings</summary>
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	openai "github.com/patsnapops/go-openai"
+)
+
+func main() {
+
+	config := openai.DefaultAzureConfig("your Azure OpenAI Key", "https://your Azure OpenAI Endpoint")
+	config.APIVersion = "2023-05-15" // optional update to latest API version
+
+	//If you use a deployment name different from the model name, you can customize the AzureModelMapperFunc function
+	//config.AzureModelMapperFunc = func(model string) string {
+	//    azureModelMapping = map[string]string{
+	//        "gpt-3.5-turbo":"your gpt-3.5-turbo deployment name",
+	//    }
+	//    return azureModelMapping[model]
+	//}
+
+	input := "Text to vectorize"
+
+	client := openai.NewClientWithConfig(config)
+	resp, err := client.CreateEmbeddings(
+		context.Background(),
+		openai.EmbeddingRequest{
+			Input: []string{input},
+			Model: openai.AdaEmbeddingV2,
+		})
+
+	if err != nil {
+		fmt.Printf("CreateEmbeddings error: %v\n", err)
+		return
+	}
+
+	vectors := resp.Data[0].Embedding // []float32 with 1536 dimensions
+
+	fmt.Println(vectors[:10], "...", vectors[len(vectors)-10:])
 }
 ```
 </details>
@@ -487,4 +542,5 @@ if errors.As(err, &e) {
 ```
 </details>
 
+See the `examples/` folder for more.
 
