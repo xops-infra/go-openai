@@ -54,9 +54,10 @@ type ChatCompletionRequest struct {
 }
 
 type ChatCompletionChoice struct {
-	Index        int                   `json:"index"`
-	Message      ChatCompletionMessage `json:"message"`
-	FinishReason string                `json:"finish_reason"`
+	Index        int                    `json:"index"`
+	Message      ChatCompletionMessage  `json:"message"`
+	FinishReason string                 `json:"finish_reason"`
+	FunctionCall map[string]interface{} `json:"function_call"`
 }
 
 // ChatCompletionResponse represents a response structure for chat completion API.
