@@ -51,7 +51,7 @@ type ChatCompletionRequest struct {
 	LogitBias        map[string]int          `json:"logit_bias,omitempty"`
 	User             string                  `json:"user,omitempty"`
 	Functions        []UnitFunction          `json:"functions,omitempty"`
-	FunctionCall     any                     `json:"function_call"`
+	FunctionCall     any                     `json:"function_call,omitempty"`
 }
 
 type ChatCompletionChoice struct {
