@@ -35,6 +35,7 @@ type ClientConfig struct {
 	APIVersion           string                    // required when APIType is APITypeAzure or APITypeAzureAD
 	AzureModelMapperFunc func(model string) string // replace model to azure deployment name func
 	HTTPClient           *http.Client
+	AzureResourceName    string
 
 	EmptyMessagesLimit uint
 }
@@ -58,6 +59,23 @@ func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
 		OrgID:      "",
 		APIType:    APITypeAzure,
 		APIVersion: "2023-05-15",
+		AzureModelMapperFunc: func(model string) string {
+			return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
+		},
+
+		HTTPClient: &http.Client{},
+
+		EmptyMessagesLimit: defaultEmptyMessagesLimit,
+	}
+}
+
+func DefaultAzureConfigWithResource(apiKey, resource string) ClientConfig {
+	return ClientConfig{
+		authToken:         apiKey,
+		BaseURL:           azureApiBaseURL,
+		AzureResourceName: resource,
+		APIType:           APITypeAzure,
+		APIVersion:        "2023-05-15",
 		AzureModelMapperFunc: func(model string) string {
 			return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
 		},
