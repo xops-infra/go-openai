@@ -29,6 +29,12 @@ type ChatCompletionMessage struct {
 	Name string `json:"name,omitempty"`
 }
 
+type UnitFunction struct {
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Parameters  map[string]interface{} `json:"parameters"`
+}
+
 // ChatCompletionRequest represents a request structure for chat completion API.
 type ChatCompletionRequest struct {
 	Model            string                  `json:"model"`
@@ -43,6 +49,8 @@ type ChatCompletionRequest struct {
 	FrequencyPenalty float32                 `json:"frequency_penalty,omitempty"`
 	LogitBias        map[string]int          `json:"logit_bias,omitempty"`
 	User             string                  `json:"user,omitempty"`
+	Functions        []UnitFunction          `json:"functions,omitempty"`
+	FunctionCall     any                     `json:"function_call"`
 }
 
 type ChatCompletionChoice struct {
