@@ -27,7 +27,7 @@ type ChatCompletionMessage struct {
 	// - https://github.com/openai/openai-python/blob/main/chatml.md
 	// - https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
 	Name         string                 `json:"name,omitempty"`
-	FunctionCall map[string]interface{} `json:"function_call"`
+	FunctionCall map[string]interface{} `json:"function_call,omitempty"`
 }
 
 type UnitFunction struct {
