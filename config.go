@@ -12,7 +12,7 @@ const (
 	azureAPIPrefix         = "openai"
 	azureApiBaseURL        = ".openai.azure.com"
 	azureDeploymentsPrefix = "deployments"
-	azureDefaultApiVersion = "2023-03-15-preview"
+	azureDefaultApiVersion = "2023-05-15"
 )
 
 type APIType string
@@ -69,13 +69,16 @@ func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
 	}
 }
 
-func DefaultAzureConfigWithResource(apiKey, resource string) ClientConfig {
+func DefaultAzureConfigWithResource(apiKey, resource, apiVersion string) ClientConfig {
+	if apiVersion == "" {
+		apiVersion = azureDefaultApiVersion
+	}
 	return ClientConfig{
 		authToken:         apiKey,
 		BaseURL:           azureApiBaseURL,
 		AzureResourceName: resource,
 		APIType:           APITypeAzure,
-		APIVersion:        "2023-05-15",
+		APIVersion:        apiVersion,
 		AzureModelMapperFunc: func(model string) string {
 			return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
 		},
