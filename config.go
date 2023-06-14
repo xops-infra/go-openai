@@ -69,19 +69,17 @@ func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
 	}
 }
 
-func DefaultAzureConfigWithResource(apiKey, resource, apiVersion string) ClientConfig {
+func DefaultAzureConfigWithModelMapperFunc(apiKey, resource, apiVersion string, azureModelMapperFunc func(model string) string) ClientConfig {
 	if apiVersion == "" {
 		apiVersion = azureDefaultApiVersion
 	}
 	return ClientConfig{
-		authToken:         apiKey,
-		BaseURL:           azureApiBaseURL,
-		AzureResourceName: resource,
-		APIType:           APITypeAzure,
-		APIVersion:        apiVersion,
-		AzureModelMapperFunc: func(model string) string {
-			return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
-		},
+		authToken:            apiKey,
+		BaseURL:              azureApiBaseURL,
+		AzureResourceName:    resource,
+		APIType:              APITypeAzure,
+		APIVersion:           apiVersion,
+		AzureModelMapperFunc: azureModelMapperFunc,
 
 		HTTPClient: &http.Client{},
 
