@@ -26,7 +26,8 @@ type ChatCompletionMessage struct {
 	// the documentation for the official library for python:
 	// - https://github.com/openai/openai-python/blob/main/chatml.md
 	// - https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
-	Name string `json:"name,omitempty"`
+	Name         string                 `json:"name,omitempty"`
+	FunctionCall map[string]interface{} `json:"function_call"`
 }
 
 type UnitFunction struct {
@@ -54,10 +55,9 @@ type ChatCompletionRequest struct {
 }
 
 type ChatCompletionChoice struct {
-	Index        int                    `json:"index"`
-	Message      ChatCompletionMessage  `json:"message"`
-	FinishReason string                 `json:"finish_reason"`
-	FunctionCall map[string]interface{} `json:"function_call"`
+	Index        int                   `json:"index"`
+	Message      ChatCompletionMessage `json:"message"`
+	FinishReason string                `json:"finish_reason"`
 }
 
 // ChatCompletionResponse represents a response structure for chat completion API.
