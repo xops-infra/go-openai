@@ -12,7 +12,7 @@ const (
 	azureAPIPrefix         = "openai"
 	azureApiBaseURL        = ".openai.azure.com"
 	azureDeploymentsPrefix = "deployments"
-	azureDefaultApiVersion = "2023-03-15-preview"
+	azureDefaultApiVersion = "2023-05-15"
 )
 
 type APIType string
@@ -35,6 +35,7 @@ type ClientConfig struct {
 	APIVersion           string                    // required when APIType is APITypeAzure or APITypeAzureAD
 	AzureModelMapperFunc func(model string) string // replace model to azure deployment name func
 	HTTPClient           *http.Client
+	AzureResourceName    string
 
 	EmptyMessagesLimit uint
 }
@@ -61,6 +62,24 @@ func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
 		AzureModelMapperFunc: func(model string) string {
 			return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
 		},
+
+		HTTPClient: &http.Client{},
+
+		EmptyMessagesLimit: defaultEmptyMessagesLimit,
+	}
+}
+
+func DefaultAzureConfigWithModelMapperFunc(apiKey, resource, apiVersion string, azureModelMapperFunc func(model string) string) ClientConfig {
+	if apiVersion == "" {
+		apiVersion = azureDefaultApiVersion
+	}
+	return ClientConfig{
+		authToken:            apiKey,
+		BaseURL:              azureApiBaseURL,
+		AzureResourceName:    resource,
+		APIType:              APITypeAzure,
+		APIVersion:           apiVersion,
+		AzureModelMapperFunc: azureModelMapperFunc,
 
 		HTTPClient: &http.Client{},
 

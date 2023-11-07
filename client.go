@@ -114,9 +114,15 @@ func decodeString(body io.Reader, output *string) error {
 func (c *Client) fullURL(suffix string, args ...any) string {
 	// /openai/deployments/{model}/chat/completions?api-version={api_version}
 	if c.config.APIType == APITypeAzure || c.config.APIType == APITypeAzureAD {
+		var baseURL string
+		if c.config.AzureResourceName == "" {
+			baseURL := c.config.BaseURL
+			baseURL = strings.TrimRight(baseURL, "/")
+		} else {
+			baseURL = fmt.Sprintf("https://%s%s",
+				c.config.AzureResourceName, c.config.BaseURL)
+		}
 
-		baseURL := c.config.BaseURL
-		baseURL = strings.TrimRight(baseURL, "/")
 		// if suffix is /models change to {endpoint}/openai/models?api-version=2022-12-01
 		// https://learn.microsoft.com/en-us/rest/api/cognitiveservices/azureopenaistable/models/list?tabs=HTTP
 		if strings.Contains(suffix, "/models") {

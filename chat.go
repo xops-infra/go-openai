@@ -26,7 +26,14 @@ type ChatCompletionMessage struct {
 	// the documentation for the official library for python:
 	// - https://github.com/openai/openai-python/blob/main/chatml.md
 	// - https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
-	Name string `json:"name,omitempty"`
+	Name         string                 `json:"name,omitempty"`
+	FunctionCall map[string]interface{} `json:"function_call,omitempty"`
+}
+
+type UnitFunction struct {
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Parameters  map[string]interface{} `json:"parameters"`
 }
 
 // ChatCompletionRequest represents a request structure for chat completion API.
@@ -43,6 +50,8 @@ type ChatCompletionRequest struct {
 	FrequencyPenalty float32                 `json:"frequency_penalty,omitempty"`
 	LogitBias        map[string]int          `json:"logit_bias,omitempty"`
 	User             string                  `json:"user,omitempty"`
+	Functions        []UnitFunction          `json:"functions,omitempty"`
+	FunctionCall     any                     `json:"function_call,omitempty"`
 }
 
 type ChatCompletionChoice struct {
