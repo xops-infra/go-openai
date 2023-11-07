@@ -1,3 +1,3 @@
-module github.com/patsnapops/go-openai
+module github.com/xops-infra/go-openai
 
 go 1.18

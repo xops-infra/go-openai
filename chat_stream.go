@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"context"
 
-	utils "github.com/patsnapops/go-openai/internal"
+	utils "github.com/xops-infra/go-openai/internal"
 )
 
 type ChatCompletionStreamChoiceDelta struct {

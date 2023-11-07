@@ -45,7 +45,7 @@ func (e *APIError) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	// optional fields for azure openai
-	// refs: https://github.com/patsnapops/go-openai/issues/343
+	// refs: https://github.com/xops-infra/go-openai/issues/343
 	if _, ok := rawMap["type"]; ok {
 		err = json.Unmarshal(rawMap["type"], &e.Type)
 		if err != nil {

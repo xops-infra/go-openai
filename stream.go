@@ -5,7 +5,7 @@ import (
 	"context"
 	"errors"
 
-	utils "github.com/patsnapops/go-openai/internal"
+	utils "github.com/xops-infra/go-openai/internal"
 )
 
 var (

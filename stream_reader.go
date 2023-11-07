@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	utils "github.com/patsnapops/go-openai/internal"
+	utils "github.com/xops-infra/go-openai/internal"
 )
 
 type streamable interface {

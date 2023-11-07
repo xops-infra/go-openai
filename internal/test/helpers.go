@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/patsnapops/go-openai/internal/test/checks"
+	"github.com/xops-infra/go-openai/internal/test/checks"
 
 	"net/http"
 	"os"

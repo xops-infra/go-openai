@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/patsnapops/go-openai"
-	"github.com/patsnapops/go-openai/internal/test/checks"
+	. "github.com/xops-infra/go-openai"
+	"github.com/xops-infra/go-openai/internal/test/checks"
 )
 
 func TestFileUpload(t *testing.T) {

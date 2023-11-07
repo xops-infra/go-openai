@@ -12,9 +12,9 @@ import (
 	"strings"
 	"testing"
 
-	. "github.com/patsnapops/go-openai"
-	"github.com/patsnapops/go-openai/internal/test"
-	"github.com/patsnapops/go-openai/internal/test/checks"
+	. "github.com/xops-infra/go-openai"
+	"github.com/xops-infra/go-openai/internal/test"
+	"github.com/xops-infra/go-openai/internal/test/checks"
 )
 
 // TestAudio Tests the transcription and translation endpoints of the API using the mocked server.

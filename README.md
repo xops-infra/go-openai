@@ -1,7 +1,7 @@
 # Go OpenAI
-[![GoDoc](http://img.shields.io/badge/GoDoc-Reference-blue.svg)](https://godoc.org/github.com/patsnapops/go-openai)
-[![Go Report Card](https://goreportcard.com/badge/github.com/patsnapops/go-openai)](https://goreportcard.com/report/github.com/patsnapops/go-openai)
-[![codecov](https://codecov.io/gh/patsnapops/go-openai/branch/master/graph/badge.svg?token=bCbIfHLIsW)](https://codecov.io/gh/patsnapops/go-openai)
+[![GoDoc](http://img.shields.io/badge/GoDoc-Reference-blue.svg)](https://godoc.org/github.com/xops-infra/go-openai)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xops-infra/go-openai)](https://goreportcard.com/report/github.com/xops-infra/go-openai)
+[![codecov](https://codecov.io/gh/xops-infra/go-openai/branch/master/graph/badge.svg?token=bCbIfHLIsW)](https://codecov.io/gh/xops-infra/go-openai)
 
 > **Note**: the repository was fork from sashabaranov/go-openai,The purpose is to support Azure simultaneously.
 
@@ -14,7 +14,7 @@ This library provides unofficial Go clients for [OpenAI API](https://platform.op
 
 ### Installation:
 ```
-go get github.com/patsnapops/go-openai
+go get github.com/xops-infra/go-openai
 ```
 
 
@@ -26,7 +26,7 @@ package main
 import (
 	"context"
 	"fmt"
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -67,7 +67,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -120,7 +120,7 @@ package main
 import (
 	"context"
 	"fmt"
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -153,7 +153,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -202,7 +202,7 @@ import (
 	"context"
 	"fmt"
 
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -234,7 +234,7 @@ import (
 	"fmt"
 	"os"
 
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -275,7 +275,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 	"image/png"
 	"os"
 )
@@ -363,7 +363,7 @@ config.HTTPClient = &http.Client{
 c := openai.NewClientWithConfig(config)
 ```
 
-See also: https://pkg.go.dev/github.com/patsnapops/go-openai#ClientConfig
+See also: https://pkg.go.dev/github.com/xops-infra/go-openai#ClientConfig
 </details>
 
 <details>
@@ -379,7 +379,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/patsnapops/go-openai"
+	"github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -433,7 +433,7 @@ import (
 	"context"
 	"fmt"
 
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -480,7 +480,7 @@ import (
 	"context"
 	"fmt"
 
-	openai "github.com/patsnapops/go-openai"
+	openai "github.com/xops-infra/go-openai"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/patsnapops/go-openai"
+	"github.com/xops-infra/go-openai"
 )
 
 func main() {
