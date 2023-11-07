@@ -12,7 +12,7 @@ const (
 	azureAPIPrefix         = "openai"
 	azureApiBaseURL        = ".openai.azure.com"
 	azureDeploymentsPrefix = "deployments"
-	azureDefaultApiVersion = "2023-05-15"
+	azureDefaultApiVersion = "2023-08-01-preview"
 )
 
 type APIType string
