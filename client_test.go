@@ -274,6 +274,72 @@ func TestClientReturnsRequestBuilderErrors(t *testing.T) {
 		{"DeleteFineTuneModel", func() (any, error) {
 			return client.DeleteFineTuneModel(ctx, "")
 		}},
+		{"CreateAssistant", func() (any, error) {
+			return client.CreateAssistant(ctx, AssistantRequest{})
+		}},
+		{"RetrieveAssistant", func() (any, error) {
+			return client.RetrieveAssistant(ctx, "")
+		}},
+		{"ModifyAssistant", func() (any, error) {
+			return client.ModifyAssistant(ctx, "", AssistantRequest{})
+		}},
+		{"DeleteAssistant", func() (any, error) {
+			return client.DeleteAssistant(ctx, "")
+		}},
+		{"ListAssistants", func() (any, error) {
+			return client.ListAssistants(ctx, nil, nil, nil, nil)
+		}},
+		{"CreateAssistantFile", func() (any, error) {
+			return client.CreateAssistantFile(ctx, "", AssistantFileRequest{})
+		}},
+		{"ListAssistantFiles", func() (any, error) {
+			return client.ListAssistantFiles(ctx, "", nil, nil, nil, nil)
+		}},
+		{"RetrieveAssistantFile", func() (any, error) {
+			return client.RetrieveAssistantFile(ctx, "", "")
+		}},
+		{"DeleteAssistantFile", func() (any, error) {
+			return nil, client.DeleteAssistantFile(ctx, "", "")
+		}},
+		{"CreateThread", func() (any, error) {
+			return client.CreateThread(ctx, ThreadRequest{})
+		}},
+		{"RetrieveThread", func() (any, error) {
+			return client.RetrieveThread(ctx, "")
+		}},
+		{"ModifyThread", func() (any, error) {
+			return client.ModifyThread(ctx, "", ModifyThreadRequest{})
+		}},
+		{"DeleteThread", func() (any, error) {
+			return client.DeleteThread(ctx, "")
+		}},
+		{"CreateRun", func() (any, error) {
+			return client.CreateRun(ctx, "", RunRequest{})
+		}},
+		{"RetrieveRun", func() (any, error) {
+			return client.RetrieveRun(ctx, "", "")
+		}},
+		{"ModifyRun", func() (any, error) {
+			return client.ModifyRun(ctx, "", "", RunModifyRequest{})
+		}},
+		{"ListRuns", func() (any, error) {
+			return client.ListRuns(ctx, "", Pagination{})
+		}},
+		{"SubmitToolOutputs", func() (any, error) {
+			return client.SubmitToolOutputs(ctx, "", "", SubmitToolOutputsRequest{})
+		}},
+		{"CancelRun", func() (any, error) {
+			return client.CancelRun(ctx, "", "")
+		}},
+		{"CreateThreadAndRun", func() (any, error) {
+			return client.CreateThreadAndRun(ctx, CreateThreadAndRunRequest{})
+		}},
+		{"RetrieveRunStep", func() (any, error) {
+			return client.RetrieveRunStep(ctx, "", "", "")
+		}},
+		{"ListRunSteps", func() (any, error) {
+			return client.ListRunSteps(ctx, "", "", Pagination{})
+		}},
 	}
 
 	for _, testCase := range testCases {
