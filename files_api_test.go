@@ -16,6 +16,19 @@ import (
 	"github.com/xops-infra/go-openai/internal/test/checks"
 )
 
+func TestFileBytesUpload(t *testing.T) {
+	client, server, teardown := setupOpenAITestServer()
+	defer teardown()
+	server.RegisterHandler("/v1/files", handleCreateFile)
+	req := openai.FileBytesRequest{
+		Name:    "foo",
+		Bytes:   []byte("foo"),
+		Purpose: openai.PurposeFineTune,
+	}
+	_, err := client.CreateFileBytes(context.Background(), req)
+	checks.NoError(t, err, "CreateFile error")
+}
+
 func TestFileUpload(t *testing.T) {
 	client, server, teardown := setupOpenAITestServer()
 	defer teardown()
@@ -73,7 +86,7 @@ func handleCreateFile(w http.ResponseWriter, r *http.Request) {
 func TestDeleteFile(t *testing.T) {
 	client, server, teardown := setupOpenAITestServer()
 	defer teardown()
-	server.RegisterHandler("/v1/files/deadbeef", func(w http.ResponseWriter, r *http.Request) {})
+	server.RegisterHandler("/v1/files/deadbeef", func(http.ResponseWriter, *http.Request) {})
 	err := client.DeleteFile(context.Background(), "deadbeef")
 	checks.NoError(t, err, "DeleteFile error")
 }
@@ -81,7 +94,7 @@ func TestDeleteFile(t *testing.T) {
 func TestListFile(t *testing.T) {
 	client, server, teardown := setupOpenAITestServer()
 	defer teardown()
-	server.RegisterHandler("/v1/files", func(w http.ResponseWriter, r *http.Request) {
+	server.RegisterHandler("/v1/files", func(w http.ResponseWriter, _ *http.Request) {
 		resBytes, _ := json.Marshal(openai.FilesList{})
 		fmt.Fprintln(w, string(resBytes))
 	})
@@ -92,7 +105,7 @@ func TestListFile(t *testing.T) {
 func TestGetFile(t *testing.T) {
 	client, server, teardown := setupOpenAITestServer()
 	defer teardown()
-	server.RegisterHandler("/v1/files/deadbeef", func(w http.ResponseWriter, r *http.Request) {
+	server.RegisterHandler("/v1/files/deadbeef", func(w http.ResponseWriter, _ *http.Request) {
 		resBytes, _ := json.Marshal(openai.File{})
 		fmt.Fprintln(w, string(resBytes))
 	})
@@ -138,7 +151,7 @@ func TestGetFileContentReturnError(t *testing.T) {
 }`
 	client, server, teardown := setupOpenAITestServer()
 	defer teardown()
-	server.RegisterHandler("/v1/files/deadbeef/content", func(w http.ResponseWriter, r *http.Request) {
+	server.RegisterHandler("/v1/files/deadbeef/content", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, wantErrorResp)
 	})
@@ -165,7 +178,7 @@ func TestGetFileContentReturnError(t *testing.T) {
 func TestGetFileContentReturnTimeoutError(t *testing.T) {
 	client, server, teardown := setupOpenAITestServer()
 	defer teardown()
-	server.RegisterHandler("/v1/files/deadbeef/content", func(w http.ResponseWriter, r *http.Request) {
+	server.RegisterHandler("/v1/files/deadbeef/content", func(http.ResponseWriter, *http.Request) {
 		time.Sleep(10 * time.Nanosecond)
 	})
 	ctx := context.Background()

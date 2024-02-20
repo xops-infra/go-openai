@@ -47,7 +47,7 @@ func TestEmbedding(t *testing.T) {
 		// the AdaSearchQuery type
 		marshaled, err := json.Marshal(embeddingReq)
 		checks.NoError(t, err, "Could not marshal embedding request")
-		if !bytes.Contains(marshaled, []byte(`"model":"`+model.String()+`"`)) {
+		if !bytes.Contains(marshaled, []byte(`"model":"`+model+`"`)) {
 			t.Fatalf("Expected embedding request to contain model field")
 		}
 
@@ -61,7 +61,7 @@ func TestEmbedding(t *testing.T) {
 		}
 		marshaled, err = json.Marshal(embeddingReqStrings)
 		checks.NoError(t, err, "Could not marshal embedding request")
-		if !bytes.Contains(marshaled, []byte(`"model":"`+model.String()+`"`)) {
+		if !bytes.Contains(marshaled, []byte(`"model":"`+model+`"`)) {
 			t.Fatalf("Expected embedding request to contain model field")
 		}
 
@@ -75,25 +75,9 @@ func TestEmbedding(t *testing.T) {
 		}
 		marshaled, err = json.Marshal(embeddingReqTokens)
 		checks.NoError(t, err, "Could not marshal embedding request")
-		if !bytes.Contains(marshaled, []byte(`"model":"`+model.String()+`"`)) {
+		if !bytes.Contains(marshaled, []byte(`"model":"`+model+`"`)) {
 			t.Fatalf("Expected embedding request to contain model field")
 		}
-	}
-}
-
-func TestEmbeddingModel(t *testing.T) {
-	var em openai.EmbeddingModel
-	err := em.UnmarshalText([]byte("text-similarity-ada-001"))
-	checks.NoError(t, err, "Could not marshal embedding model")
-
-	if em != openai.AdaSimilarity {
-		t.Errorf("Model is not equal to AdaSimilarity")
-	}
-
-	err = em.UnmarshalText([]byte("some-non-existent-model"))
-	checks.NoError(t, err, "Could not marshal embedding model")
-	if em != openai.Unknown {
-		t.Errorf("Model is not equal to Unknown")
 	}
 }
 
@@ -172,6 +156,32 @@ func TestEmbeddingEndpoint(t *testing.T) {
 		EncodingFormat: openai.EmbeddingEncodingFormatBase64,
 	})
 	checks.HasError(t, err, "CreateEmbeddings error")
+}
+
+func TestAzureEmbeddingEndpoint(t *testing.T) {
+	client, server, teardown := setupAzureTestServer()
+	defer teardown()
+
+	sampleEmbeddings := []openai.Embedding{
+		{Embedding: []float32{1.23, 4.56, 7.89}},
+		{Embedding: []float32{-0.006968617, -0.0052718227, 0.011901081}},
+	}
+
+	server.RegisterHandler(
+		"/openai/deployments/text-embedding-ada-002/embeddings",
+		func(w http.ResponseWriter, _ *http.Request) {
+			resBytes, _ := json.Marshal(openai.EmbeddingResponse{Data: sampleEmbeddings})
+			fmt.Fprintln(w, string(resBytes))
+		},
+	)
+	// test create embeddings with strings (simple embedding request)
+	res, err := client.CreateEmbeddings(context.Background(), openai.EmbeddingRequest{
+		Model: openai.AdaEmbeddingV2,
+	})
+	checks.NoError(t, err, "CreateEmbeddings error")
+	if !reflect.DeepEqual(res.Data, sampleEmbeddings) {
+		t.Errorf("Expected %#v embeddings, got %#v", sampleEmbeddings, res.Data)
+	}
 }
 
 func TestEmbeddingResponseBase64_ToEmbeddingResponse(t *testing.T) {

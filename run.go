@@ -24,8 +24,9 @@ type Run struct {
 	Model          string             `json:"model"`
 	Instructions   string             `json:"instructions,omitempty"`
 	Tools          []Tool             `json:"tools"`
-	FileIDS        []string           `json:"file_ids"`
+	FileIDS        []string           `json:"file_ids"` //nolint:revive // backwards-compatibility
 	Metadata       map[string]any     `json:"metadata"`
+	Usage          Usage              `json:"usage,omitempty"`
 
 	httpHeader
 }
@@ -40,6 +41,7 @@ const (
 	RunStatusFailed         RunStatus = "failed"
 	RunStatusCompleted      RunStatus = "completed"
 	RunStatusExpired        RunStatus = "expired"
+	RunStatusCancelled      RunStatus = "cancelled"
 )
 
 type RunRequiredAction struct {
@@ -70,11 +72,12 @@ const (
 )
 
 type RunRequest struct {
-	AssistantID  string  `json:"assistant_id"`
-	Model        *string `json:"model,omitempty"`
-	Instructions *string `json:"instructions,omitempty"`
-	Tools        []Tool  `json:"tools,omitempty"`
-	Metadata     map[string]any
+	AssistantID            string         `json:"assistant_id"`
+	Model                  string         `json:"model,omitempty"`
+	Instructions           string         `json:"instructions,omitempty"`
+	AdditionalInstructions string         `json:"additional_instructions,omitempty"`
+	Tools                  []Tool         `json:"tools,omitempty"`
+	Metadata               map[string]any `json:"metadata,omitempty"`
 }
 
 type RunModifyRequest struct {
@@ -142,20 +145,20 @@ const (
 type StepDetails struct {
 	Type            RunStepType                 `json:"type"`
 	MessageCreation *StepDetailsMessageCreation `json:"message_creation,omitempty"`
-	ToolCalls       *StepDetailsToolCalls       `json:"tool_calls,omitempty"`
+	ToolCalls       []ToolCall                  `json:"tool_calls,omitempty"`
 }
 
 type StepDetailsMessageCreation struct {
 	MessageID string `json:"message_id"`
 }
 
-type StepDetailsToolCalls struct {
-	ToolCalls []ToolCall `json:"tool_calls"`
-}
-
 // RunStepList is a list of steps.
 type RunStepList struct {
 	RunSteps []RunStep `json:"data"`
+
+	FirstID string `json:"first_id"`
+	LastID  string `json:"last_id"`
+	HasMore bool   `json:"has_more"`
 
 	httpHeader
 }
