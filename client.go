@@ -38,6 +38,12 @@ func (h *httpHeader) GetRateLimitHeaders() RateLimitHeaders {
 	return newRateLimitHeaders(h.Header())
 }
 
+type RawResponse struct {
+	io.ReadCloser
+
+	httpHeader
+}
+
 // NewClient creates new OpenAI API client.
 func NewClient(authToken string) *Client {
 	config := DefaultConfig(authToken)
@@ -134,8 +140,8 @@ func (c *Client) sendRequest(req *http.Request, v Response) error {
 	return decodeResponse(res.Body, v)
 }
 
-func (c *Client) sendRequestRaw(req *http.Request) (body io.ReadCloser, err error) {
-	resp, err := c.config.HTTPClient.Do(req)
+func (c *Client) sendRequestRaw(req *http.Request) (response RawResponse, err error) {
+	resp, err := c.config.HTTPClient.Do(req) //nolint:bodyclose // body should be closed by outer function
 	if err != nil {
 		return
 	}
@@ -144,7 +150,10 @@ func (c *Client) sendRequestRaw(req *http.Request) (body io.ReadCloser, err erro
 		err = c.handleErrorResp(resp)
 		return
 	}
-	return resp.Body, nil
+
+	response.SetHeader(resp.Header)
+	response.ReadCloser = resp.Body
+	return
 }
 
 func sendRequestStream[T streamable](client *Client, req *http.Request) (*streamReader[T], error) {
@@ -228,7 +237,7 @@ func (c *Client) fullURL(suffix string, args ...any) string {
 
 		// if suffix is /models change to {endpoint}/openai/models?api-version=2022-12-01
 		// https://learn.microsoft.com/en-us/rest/api/cognitiveservices/azureopenaistable/models/list?tabs=HTTP
-		if strings.Contains(suffix, "/models") {
+		if containsSubstr([]string{"/models", "/assistants", "/threads", "/files"}, suffix) {
 			return fmt.Sprintf("%s/%s%s?api-version=%s", baseURL, azureAPIPrefix, suffix, c.config.APIVersion)
 		}
 		azureDeploymentName := "UNKNOWN"
@@ -264,4 +273,13 @@ func (c *Client) handleErrorResp(resp *http.Response) error {
 
 	errRes.Error.HTTPStatusCode = resp.StatusCode
 	return errRes.Error
+}
+
+func containsSubstr(s []string, e string) bool {
+	for _, v := range s {
+		if strings.Contains(e, v) {
+			return true
+		}
+	}
+	return false
 }
