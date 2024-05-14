@@ -9,7 +9,7 @@ This library provides unofficial Go clients for [OpenAI API](https://platform.op
 
 * ChatGPT
 * GPT-3, GPT-4
-* DALL·E 2
+* DALL·E 2, DALL·E 3
 * Whisper
 
 ## Installation
@@ -638,7 +638,7 @@ FunctionDefinition{
       },
       "unit": {
         Type: jsonschema.String,
-        Enum: []string{"celcius", "fahrenheit"},
+        Enum: []string{"celsius", "fahrenheit"},
       },
     },
     Required: []string{"location"},
