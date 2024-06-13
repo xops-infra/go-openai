@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/tidwall/gjson"
 )
 
 // APIError provides error information returned by the OpenAI API.
@@ -39,6 +41,29 @@ func (e *APIError) Error() string {
 	}
 
 	return e.Message
+}
+
+func (e *ErrorResponse) UnmarshalJSON(data []byte) (err error) {
+	// adpter deepseek error
+	if gjson.GetBytes(data, "detail").Exists() {
+		apiErr := struct {
+			Code           any         `json:"code,omitempty"`
+			Message        string      `json:"detail"`
+			Param          *string     `json:"param,omitempty"`
+			Type           string      `json:"type"`
+			HTTPStatusCode int         `json:"-"`
+			InnerError     *InnerError `json:"innererror,omitempty"`
+		}{}
+
+		err = json.Unmarshal(data, &apiErr)
+		if err != nil {
+			return
+		}
+		e.Error = (*APIError)(&apiErr)
+		return
+	}
+
+	return json.Unmarshal([]byte(gjson.GetBytes(data, "error").String()), &e.Error)
 }
 
 func (e *APIError) UnmarshalJSON(data []byte) (err error) {

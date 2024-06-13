@@ -216,7 +216,6 @@ func (c *Client) CreateChatCompletion(
 		err = ErrChatCompletionInvalidModel
 		return
 	}
-
 	req, err := c.newRequest(ctx, http.MethodPost, c.fullURL(urlSuffix, request.Model), withBody(request))
 	if err != nil {
 		return
