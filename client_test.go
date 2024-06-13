@@ -7,9 +7,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"testing"
 
 	"github.com/xops-infra/go-openai/internal/test"
+	"github.com/xops-infra/go-openai/internal/test/checks"
 )
 
 var errTestRequestBuilderFailed = errors.New("test request builder failed")
@@ -43,23 +45,29 @@ func TestDecodeResponse(t *testing.T) {
 	testCases := []struct {
 		name     string
 		value    interface{}
+		expected interface{}
 		body     io.Reader
 		hasError bool
 	}{
 		{
-			name:  "nil input",
-			value: nil,
-			body:  bytes.NewReader([]byte("")),
+			name:     "nil input",
+			value:    nil,
+			body:     bytes.NewReader([]byte("")),
+			expected: nil,
 		},
 		{
-			name:  "string input",
-			value: &stringInput,
-			body:  bytes.NewReader([]byte("test")),
+			name:     "string input",
+			value:    &stringInput,
+			body:     bytes.NewReader([]byte("test")),
+			expected: "test",
 		},
 		{
 			name:  "map input",
 			value: &map[string]interface{}{},
 			body:  bytes.NewReader([]byte(`{"test": "test"}`)),
+			expected: map[string]interface{}{
+				"test": "test",
+			},
 		},
 		{
 			name:     "reader return error",
@@ -67,14 +75,38 @@ func TestDecodeResponse(t *testing.T) {
 			body:     &errorReader{err: errors.New("dummy")},
 			hasError: true,
 		},
+		{
+			name:  "audio text input",
+			value: &audioTextResponse{},
+			body:  bytes.NewReader([]byte("test")),
+			expected: audioTextResponse{
+				Text: "test",
+			},
+		},
+	}
+
+	assertEqual := func(t *testing.T, expected, actual interface{}) {
+		t.Helper()
+		if expected == actual {
+			return
+		}
+		v := reflect.ValueOf(actual).Elem().Interface()
+		if !reflect.DeepEqual(v, expected) {
+			t.Fatalf("Unexpected value: %v, expected: %v", v, expected)
+		}
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			err := decodeResponse(tc.body, tc.value)
-			if (err != nil) != tc.hasError {
-				t.Errorf("Unexpected error: %v", err)
+			if tc.hasError {
+				checks.HasError(t, err, "Unexpected nil error")
+				return
 			}
+			if err != nil {
+				t.Fatalf("Unexpected error: %v", err)
+			}
+			assertEqual(t, tc.expected, tc.value)
 		})
 	}
 }
@@ -247,6 +279,9 @@ func TestClientReturnsRequestBuilderErrors(t *testing.T) {
 		{"CreateImage", func() (any, error) {
 			return client.CreateImage(ctx, ImageRequest{})
 		}},
+		{"CreateFileBytes", func() (any, error) {
+			return client.CreateFileBytes(ctx, FileBytesRequest{})
+		}},
 		{"DeleteFile", func() (any, error) {
 			return nil, client.DeleteFile(ctx, "")
 		}},
@@ -301,6 +336,24 @@ func TestClientReturnsRequestBuilderErrors(t *testing.T) {
 		{"DeleteAssistantFile", func() (any, error) {
 			return nil, client.DeleteAssistantFile(ctx, "", "")
 		}},
+		{"CreateMessage", func() (any, error) {
+			return client.CreateMessage(ctx, "", MessageRequest{})
+		}},
+		{"ListMessage", func() (any, error) {
+			return client.ListMessage(ctx, "", nil, nil, nil, nil)
+		}},
+		{"RetrieveMessage", func() (any, error) {
+			return client.RetrieveMessage(ctx, "", "")
+		}},
+		{"ModifyMessage", func() (any, error) {
+			return client.ModifyMessage(ctx, "", "", nil)
+		}},
+		{"RetrieveMessageFile", func() (any, error) {
+			return client.RetrieveMessageFile(ctx, "", "", "")
+		}},
+		{"ListMessageFiles", func() (any, error) {
+			return client.ListMessageFiles(ctx, "", "")
+		}},
 		{"CreateThread", func() (any, error) {
 			return client.CreateThread(ctx, ThreadRequest{})
 		}},
@@ -340,6 +393,9 @@ func TestClientReturnsRequestBuilderErrors(t *testing.T) {
 		{"ListRunSteps", func() (any, error) {
 			return client.ListRunSteps(ctx, "", "", Pagination{})
 		}},
+		{"CreateSpeech", func() (any, error) {
+			return client.CreateSpeech(ctx, CreateSpeechRequest{Model: TTSModel1, Voice: VoiceAlloy})
+		}},
 	}
 
 	for _, testCase := range testCases {
@@ -350,7 +406,7 @@ func TestClientReturnsRequestBuilderErrors(t *testing.T) {
 	}
 }
 
-func TestClientReturnsRequestBuilderErrorsAddtion(t *testing.T) {
+func TestClientReturnsRequestBuilderErrorsAddition(t *testing.T) {
 	config := DefaultConfig(test.GetTestToken())
 	client := NewClientWithConfig(config)
 	client.requestBuilder = &failingRequestBuilder{}

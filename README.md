@@ -3,13 +3,13 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/xops-infra/go-openai)](https://goreportcard.com/report/github.com/xops-infra/go-openai)
 [![codecov](https://codecov.io/gh/xops-infra/go-openai/branch/master/graph/badge.svg?token=bCbIfHLIsW)](https://codecov.io/gh/xops-infra/go-openai)
 
-> **Note**: the repository was fork from sashabaranov/go-openai,The purpose is to support Azure simultaneously.
+> **Note**: the repository was fork from xops-infra/go-openai,The purpose is to support Azure simultaneously.
 
 This library provides unofficial Go clients for [OpenAI API](https://platform.openai.com/). We support: 
 
 * ChatGPT
 * GPT-3, GPT-4
-* DALL·E 2
+* DALL·E 2, DALL·E 3
 * Whisper
 
 ## Installation
@@ -455,7 +455,7 @@ func main() {
 	config := openai.DefaultAzureConfig("your Azure OpenAI Key", "https://your Azure OpenAI Endpoint")
 	// If you use a deployment name different from the model name, you can customize the AzureModelMapperFunc function
 	// config.AzureModelMapperFunc = func(model string) string {
-	// 	azureModelMapping = map[string]string{
+	// 	azureModelMapping := map[string]string{
 	// 		"gpt-3.5-turbo": "your gpt-3.5-turbo deployment name",
 	// 	}
 	// 	return azureModelMapping[model]
@@ -494,7 +494,7 @@ package main
 import (
 	"context"
 	"log"
-	openai "github.com/sashabaranov/go-openai"
+	openai "github.com/xops-infra/go-openai"
 
 )
 
@@ -561,7 +561,7 @@ func main() {
 
 	//If you use a deployment name different from the model name, you can customize the AzureModelMapperFunc function
 	//config.AzureModelMapperFunc = func(model string) string {
-	//    azureModelMapping = map[string]string{
+	//    azureModelMapping := map[string]string{
 	//        "gpt-3.5-turbo":"your gpt-3.5-turbo deployment name",
 	//    }
 	//    return azureModelMapping[model]
@@ -638,7 +638,7 @@ FunctionDefinition{
       },
       "unit": {
         Type: jsonschema.String,
-        Enum: []string{"celcius", "fahrenheit"},
+        Enum: []string{"celsius", "fahrenheit"},
       },
     },
     Required: []string{"location"},
@@ -682,7 +682,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
+	"github.com/xops-infra/go-openai"
 )
 
 func main() {
@@ -766,7 +766,7 @@ Due to the factors mentioned above, different answers may be returned even for t
 By adopting these strategies, you can expect more consistent results.
 
 **Related Issues:**  
-[omitempty option of request struct will generate incorrect request when parameter is 0.](https://github.com/sashabaranov/go-openai/issues/9)
+[omitempty option of request struct will generate incorrect request when parameter is 0.](https://github.com/xops-infra/go-openai/issues/9)
 
 ### Does Go OpenAI provide a method to count tokens?
 
@@ -777,15 +777,15 @@ For counting tokens, you might find the following links helpful:
 - [How to count tokens with tiktoken](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb)
 
 **Related Issues:**  
-[Is it possible to join the implementation of GPT3 Tokenizer](https://github.com/sashabaranov/go-openai/issues/62)
+[Is it possible to join the implementation of GPT3 Tokenizer](https://github.com/xops-infra/go-openai/issues/62)
 
 ## Contributing
 
-By following [Contributing Guidelines](https://github.com/sashabaranov/go-openai/blob/master/CONTRIBUTING.md), we hope to ensure that your contributions are made smoothly and efficiently.
+By following [Contributing Guidelines](https://github.com/xops-infra/go-openai/blob/master/CONTRIBUTING.md), we hope to ensure that your contributions are made smoothly and efficiently.
 
 ## Thank you
 
-We want to take a moment to express our deepest gratitude to the [contributors](https://github.com/sashabaranov/go-openai/graphs/contributors) and sponsors of this project:
+We want to take a moment to express our deepest gratitude to the [contributors](https://github.com/xops-infra/go-openai/graphs/contributors) and sponsors of this project:
 - [Carson Kahn](https://carsonkahn.com) of [Spindle AI](https://spindleai.com)
 
 To all of you: thank you. You've helped us achieve more than we ever imagined possible. Can't wait to see where we go next, together!

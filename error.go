@@ -25,7 +25,7 @@ type InnerError struct {
 	ContentFilterResults ContentFilterResults `json:"content_filter_result,omitempty"`
 }
 
-// RequestError provides informations about generic request errors.
+// RequestError provides information about generic request errors.
 type RequestError struct {
 	HTTPStatusCode int
 	Err            error
@@ -76,7 +76,7 @@ func (e *APIError) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(rawMap["message"], &e.Message)
 	if err != nil {
 		// If the parameter field of a function call is invalid as a JSON schema
-		// refs: https://github.com/sashabaranov/go-openai/issues/381
+		// refs: https://github.com/xops-infra/go-openai/issues/381
 		var messages []string
 		err = json.Unmarshal(rawMap["message"], &messages)
 		if err != nil {
