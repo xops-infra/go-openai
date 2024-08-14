@@ -95,8 +95,6 @@ var disabledModelsForEndpoints = map[string]map[string]bool{
 		GPT4oMini20240718:    true,
 		GPT4o20240513:        true,
 		GPT4o20240806:        true,
-		GPT4oMini:            true,
-		GPT4oMini20240718:    true,
 		GPT4TurboPreview:     true,
 		GPT4VisionPreview:    true,
 		GPT4Turbo1106:        true,
