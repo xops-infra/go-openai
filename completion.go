@@ -67,8 +67,12 @@ const (
 	GPT3Ada    = "ada"
 	GPT3Ada002 = "ada-002"
 	// Deprecated: Model is shutdown. Use babbage-002 instead.
-	GPT3Babbage    = "babbage"
-	GPT3Babbage002 = "babbage-002"
+	GPT3Babbage       = "babbage"
+	GPT3Babbage002    = "babbage-002"
+	O1Preview         = "o1-preview"
+	O1Preview20240912 = "o1-preview-2024-09-12"
+	O1Mini            = "o1-mini"
+	O1Mini20240912    = "o1-mini-2024-09-12"
 )
 
 // Codex Defines the models provided by OpenAI.
@@ -106,6 +110,10 @@ var disabledModelsForEndpoints = map[string]map[string]bool{
 		GPT432K:              true,
 		GPT432K0314:          true,
 		GPT432K0613:          true,
+		O1Preview:            true,
+		O1Preview20240912:    true,
+		O1Mini:               true,
+		O1Mini20240912:       true,
 	},
 	chatCompletionsSuffix: {
 		CodexCodeDavinci002:     true,
@@ -155,8 +163,8 @@ type CompletionRequest struct {
 	Stop            []string       `json:"stop,omitempty"`
 	Stream          bool           `json:"stream,omitempty"`
 	Suffix          string         `json:"suffix,omitempty"`
-	Temperature     *float32        `json:"temperature,omitempty"`
-	TopP            *float32        `json:"top_p,omitempty"`
+	Temperature     *float32       `json:"temperature,omitempty"`
+	TopP            *float32       `json:"top_p,omitempty"`
 	User            string         `json:"user,omitempty"`
 }
 
