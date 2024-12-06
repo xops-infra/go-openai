@@ -54,6 +54,7 @@ func (e *ErrorResponse) UnmarshalJSON(data []byte) (err error) {
 			Message        string      `json:"detail"`
 			Param          *string     `json:"param,omitempty"`
 			Type           string      `json:"type"`
+			HTTPStatus     string      `json:"-"`
 			HTTPStatusCode int         `json:"-"`
 			InnerError     *InnerError `json:"innererror,omitempty"`
 		}{}

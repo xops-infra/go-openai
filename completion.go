@@ -83,10 +83,6 @@ const (
 	// Deprecated: Model is shutdown. Use babbage-002 instead.
 	GPT3Babbage       = "babbage"
 	GPT3Babbage002    = "babbage-002"
-	O1Preview         = "o1-preview"
-	O1Preview20240912 = "o1-preview-2024-09-12"
-	O1Mini            = "o1-mini"
-	O1Mini20240912    = "o1-mini-2024-09-12"
 )
 
 // Codex Defines the models provided by OpenAI.
