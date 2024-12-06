@@ -134,14 +134,17 @@ func TestHandleErrorResp(t *testing.T) {
 	client := NewClient(mockToken)
 
 	testCases := []struct {
-		name     string
-		httpCode int
-		body     io.Reader
-		expected string
+		name        string
+		httpCode    int
+		httpStatus  string
+		contentType string
+		body        io.Reader
+		expected    string
 	}{
 		{
-			name:     "401 Invalid Authentication",
-			httpCode: http.StatusUnauthorized,
+			name:        "401 Invalid Authentication",
+			httpCode:    http.StatusUnauthorized,
+			contentType: "application/json",
 			body: bytes.NewReader([]byte(
 				`{
 					"error":{
@@ -152,11 +155,12 @@ func TestHandleErrorResp(t *testing.T) {
 					}
 				}`,
 			)),
-			expected: "error, status code: 401, message: You didn't provide an API key. ....",
+			expected: "error, status code: 401, status: , message: You didn't provide an API key. ....",
 		},
 		{
-			name:     "401 Azure Access Denied",
-			httpCode: http.StatusUnauthorized,
+			name:        "401 Azure Access Denied",
+			httpCode:    http.StatusUnauthorized,
+			contentType: "application/json",
 			body: bytes.NewReader([]byte(
 				`{
 					"error":{
@@ -165,11 +169,12 @@ func TestHandleErrorResp(t *testing.T) {
 					}
 				}`,
 			)),
-			expected: "error, status code: 401, message: Access denied due to Virtual Network/Firewall rules.",
+			expected: "error, status code: 401, status: , message: Access denied due to Virtual Network/Firewall rules.",
 		},
 		{
-			name:     "503 Model Overloaded",
-			httpCode: http.StatusServiceUnavailable,
+			name:        "503 Model Overloaded",
+			httpCode:    http.StatusServiceUnavailable,
+			contentType: "application/json",
 			body: bytes.NewReader([]byte(`
 				{
 					"error":{
@@ -179,34 +184,64 @@ func TestHandleErrorResp(t *testing.T) {
 						"code":null
 					}
 				}`)),
-			expected: "error, status code: 503, message: That model...",
+			expected: "error, status code: 503, status: , message: That model...",
 		},
 		{
-			name:     "503 no message (Unknown response)",
-			httpCode: http.StatusServiceUnavailable,
+			name:        "503 no message (Unknown response)",
+			httpCode:    http.StatusServiceUnavailable,
+			contentType: "application/json",
 			body: bytes.NewReader([]byte(`
 				{
 					"error":{}
 				}`)),
-			expected: "error, status code: 503, message: ",
+			expected: `error, status code: 503, status: , message: , body: 
+				{
+					"error":{}
+				}`,
+		},
+		{
+			name:        "413 Request Entity Too Large",
+			httpCode:    http.StatusRequestEntityTooLarge,
+			contentType: "text/html",
+			body: bytes.NewReader([]byte(`
+	<html>
+	<head><title>413 Request Entity Too Large</title></head>
+	<body>
+	<center><h1>413 Request Entity Too Large</h1></center>
+	<hr><center>nginx</center>
+	</body>
+	</html>`)),
+			expected: `error, status code: 413, status: , message: invalid character '<' looking for beginning of value, body: 
+	<html>
+	<head><title>413 Request Entity Too Large</title></head>
+	<body>
+	<center><h1>413 Request Entity Too Large</h1></center>
+	<hr><center>nginx</center>
+	</body>
+	</html>`,
+		},
+		{
+			name:        "errorReader",
+			httpCode:    http.StatusRequestEntityTooLarge,
+			contentType: "text/html",
+			body:        &errorReader{err: errors.New("errorReader")},
+			expected:    "error, reading response body: errorReader",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			testCase := &http.Response{}
+			testCase := &http.Response{
+				Header: map[string][]string{
+					"Content-Type": {tc.contentType},
+				},
+			}
 			testCase.StatusCode = tc.httpCode
 			testCase.Body = io.NopCloser(tc.body)
 			err := client.handleErrorResp(testCase)
 			t.Log(err.Error())
 			if err.Error() != tc.expected {
 				t.Errorf("Unexpected error: %v , expected: %s", err, tc.expected)
-				t.Fail()
-			}
-
-			e := &APIError{}
-			if !errors.As(err, &e) {
-				t.Errorf("(%s) Expected error to be of type APIError", tc.name)
 				t.Fail()
 			}
 		})
@@ -340,13 +375,16 @@ func TestClientReturnsRequestBuilderErrors(t *testing.T) {
 			return client.CreateMessage(ctx, "", MessageRequest{})
 		}},
 		{"ListMessage", func() (any, error) {
-			return client.ListMessage(ctx, "", nil, nil, nil, nil)
+			return client.ListMessage(ctx, "", nil, nil, nil, nil, nil)
 		}},
 		{"RetrieveMessage", func() (any, error) {
 			return client.RetrieveMessage(ctx, "", "")
 		}},
 		{"ModifyMessage", func() (any, error) {
 			return client.ModifyMessage(ctx, "", "", nil)
+		}},
+		{"DeleteMessage", func() (any, error) {
+			return client.DeleteMessage(ctx, "", "")
 		}},
 		{"RetrieveMessageFile", func() (any, error) {
 			return client.RetrieveMessageFile(ctx, "", "", "")
@@ -429,5 +467,107 @@ func TestClientReturnsRequestBuilderErrorsAddition(t *testing.T) {
 	_, err = client.CreateCompletionStream(ctx, CompletionRequest{Prompt: 1})
 	if !errors.Is(err, ErrCompletionRequestPromptTypeNotSupported) {
 		t.Fatalf("Did not return error when request builder failed: %v", err)
+	}
+}
+
+func TestClient_suffixWithAPIVersion(t *testing.T) {
+	type fields struct {
+		apiVersion string
+	}
+	type args struct {
+		suffix string
+	}
+	tests := []struct {
+		name      string
+		fields    fields
+		args      args
+		want      string
+		wantPanic string
+	}{
+		{
+			"",
+			fields{apiVersion: "2023-05"},
+			args{suffix: "/assistants"},
+			"/assistants?api-version=2023-05",
+			"",
+		},
+		{
+			"",
+			fields{apiVersion: "2023-05"},
+			args{suffix: "/assistants?limit=5"},
+			"/assistants?api-version=2023-05&limit=5",
+			"",
+		},
+		{
+			"",
+			fields{apiVersion: "2023-05"},
+			args{suffix: "123:assistants?limit=5"},
+			"/assistants?api-version=2023-05&limit=5",
+			"failed to parse url suffix",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Client{
+				config: ClientConfig{APIVersion: tt.fields.apiVersion},
+			}
+			defer func() {
+				if r := recover(); r != nil {
+					// Check if the panic message matches the expected panic message
+					if rStr, ok := r.(string); ok {
+						if rStr != tt.wantPanic {
+							t.Errorf("suffixWithAPIVersion() = %v, want %v", rStr, tt.wantPanic)
+						}
+					} else {
+						// If the panic is not a string, log it
+						t.Errorf("suffixWithAPIVersion() panicked with non-string value: %v", r)
+					}
+				}
+			}()
+			if got := c.suffixWithAPIVersion(tt.args.suffix); got != tt.want {
+				t.Errorf("suffixWithAPIVersion() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestClient_baseURLWithAzureDeployment(t *testing.T) {
+	type args struct {
+		baseURL string
+		suffix  string
+		model   string
+	}
+	tests := []struct {
+		name           string
+		args           args
+		wantNewBaseURL string
+	}{
+		{
+			"",
+			args{baseURL: "https://test.openai.azure.com/", suffix: assistantsSuffix, model: GPT4oMini},
+			"https://test.openai.azure.com/openai",
+		},
+		{
+			"",
+			args{baseURL: "https://test.openai.azure.com/", suffix: chatCompletionsSuffix, model: GPT4oMini},
+			"https://test.openai.azure.com/openai/deployments/gpt-4o-mini",
+		},
+		{
+			"",
+			args{baseURL: "https://test.openai.azure.com/", suffix: chatCompletionsSuffix, model: ""},
+			"https://test.openai.azure.com/openai/deployments/UNKNOWN",
+		},
+	}
+	client := NewClient("")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotNewBaseURL := client.baseURLWithAzureDeployment(
+				tt.args.baseURL,
+				tt.args.suffix,
+				tt.args.model,
+			); gotNewBaseURL != tt.wantNewBaseURL {
+				t.Errorf("baseURLWithAzureDeployment() = %v, want %v", gotNewBaseURL, tt.wantNewBaseURL)
+			}
+		})
 	}
 }

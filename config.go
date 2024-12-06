@@ -28,6 +28,10 @@ const AzureAPIKeyHeader = "api-key"
 
 const defaultAssistantVersion = "v2" // upgrade to v2 to support vector store
 
+type HTTPDoer interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 // ClientConfig is a configuration of a client.
 type ClientConfig struct {
 	authToken string
@@ -38,7 +42,7 @@ type ClientConfig struct {
 	APIVersion           string // required when APIType is APITypeAzure or APITypeAzureAD
 	AssistantVersion     string
 	AzureModelMapperFunc func(model string) string // replace model to azure deployment name func
-	HTTPClient           *http.Client
+	HTTPClient           HTTPDoer
 	AzureResourceName    string
 
 	EmptyMessagesLimit uint

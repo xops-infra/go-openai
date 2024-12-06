@@ -155,7 +155,7 @@ const (
 type EmbeddingRequest struct {
 	Input          any                     `json:"input"`
 	Model          EmbeddingModel          `json:"model"`
-	User           string                  `json:"user"`
+	User           string                  `json:"user,omitempty"`
 	EncodingFormat EmbeddingEncodingFormat `json:"encoding_format,omitempty"`
 	// Dimensions The number of dimensions the resulting output embeddings should have.
 	// Only supported in text-embedding-3 and later models.
@@ -241,7 +241,12 @@ func (c *Client) CreateEmbeddings(
 	conv EmbeddingRequestConverter,
 ) (res EmbeddingResponse, err error) {
 	baseReq := conv.Convert()
-	req, err := c.newRequest(ctx, http.MethodPost, c.fullURL("/embeddings", string(baseReq.Model)), withBody(baseReq))
+	req, err := c.newRequest(
+		ctx,
+		http.MethodPost,
+		c.fullURL("/embeddings", withModel(string(baseReq.Model))),
+		withBody(baseReq),
+	)
 	if err != nil {
 		return
 	}
