@@ -246,7 +246,7 @@ var azureDeploymentsEndpoints = []string{
 
 // fullURL returns full URL for request.
 func (c *Client) fullURL(suffix string, setters ...fullURLOption) string {
-	baseURL := strings.TrimRight(c.config.BaseURL, "/")
+	baseURL := c.completeBaseURLWithAzureResource()
 	args := fullURLOptions{}
 	for _, setter := range setters {
 		setter(&args)
@@ -260,6 +260,15 @@ func (c *Client) fullURL(suffix string, setters ...fullURLOption) string {
 		suffix = c.suffixWithAPIVersion(suffix)
 	}
 	return fmt.Sprintf("%s%s", baseURL, suffix)
+}
+
+func (c *Client) completeBaseURLWithAzureResource() string {
+	if c.config.AzureResourceName == "" {
+		return strings.TrimRight(c.config.BaseURL, "/")
+	}
+
+	return fmt.Sprintf("https://%s%s",
+		c.config.AzureResourceName, c.config.BaseURL)
 }
 
 func (c *Client) suffixWithAPIVersion(suffix string) string {
