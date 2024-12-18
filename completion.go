@@ -25,6 +25,8 @@ var (
 // GPT3 Models are designed for text-based tasks. For code-specific
 // tasks, please refer to the Codex series of models.
 const (
+	O1                    = "o1"
+	O120241217            = "o1-2024-12-17"
 	O1Mini                = "o1-mini"
 	O1Mini20240912        = "o1-mini-2024-09-12"
 	O1Preview             = "o1-preview"
@@ -81,8 +83,8 @@ const (
 	GPT3Ada    = "ada"
 	GPT3Ada002 = "ada-002"
 	// Deprecated: Model is shutdown. Use babbage-002 instead.
-	GPT3Babbage       = "babbage"
-	GPT3Babbage002    = "babbage-002"
+	GPT3Babbage    = "babbage"
+	GPT3Babbage002 = "babbage-002"
 )
 
 // Codex Defines the models provided by OpenAI.
