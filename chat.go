@@ -96,7 +96,7 @@ type ChatMessagePart struct {
 type ChatCompletionMessage struct {
 	Role             string  `json:"role"`
 	Content          string  `json:"content"`
-	ReasoningContent *string `json:"reasoning_content"`
+	ReasoningContent *string `json:"reasoning_content,omitempty"`
 	Refusal          string  `json:"refusal,omitempty"`
 	MultiContent     []ChatMessagePart
 
@@ -123,7 +123,7 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 		msg := struct {
 			Role             string            `json:"role"`
 			Content          string            `json:"-"`
-			ReasoningContent *string           `json:"reasoning_content"`
+			ReasoningContent *string           `json:"reasoning_content,omitempty"`
 			Refusal          string            `json:"refusal,omitempty"`
 			MultiContent     []ChatMessagePart `json:"content,omitempty"`
 			Name             string            `json:"name,omitempty"`
@@ -137,7 +137,7 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 	msg := struct {
 		Role             string            `json:"role"`
 		Content          string            `json:"content"`
-		ReasoningContent *string           `json:"reasoning_content"`
+		ReasoningContent *string           `json:"reasoning_content,omitempty"`
 		Refusal          string            `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart `json:"-"`
 		Name             string            `json:"name,omitempty"`
@@ -152,7 +152,7 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 	msg := struct {
 		Role             string  `json:"role"`
 		Content          string  `json:"content"`
-		ReasoningContent *string `json:"reasoning_content"`
+		ReasoningContent *string `json:"reasoning_content,omitempty"`
 		Refusal          string  `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart
 		Name             string        `json:"name,omitempty"`
@@ -168,7 +168,7 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 	multiMsg := struct {
 		Role             string `json:"role"`
 		Content          string
-		ReasoningContent *string           `json:"reasoning_content"`
+		ReasoningContent *string           `json:"reasoning_content,omitempty"`
 		Refusal          string            `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart `json:"content"`
 		Name             string            `json:"name,omitempty"`
