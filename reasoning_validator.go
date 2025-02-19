@@ -60,10 +60,10 @@ func (v *ReasoningValidator) validateReasoningModelParams(request ChatCompletion
 	if request.LogProbs {
 		return ErrReasoningModelLimitationsLogprobs
 	}
-	if request.Temperature > 0 && request.Temperature != 1 {
+	if request.Temperature != nil && *request.Temperature > 0 && *request.Temperature != 1 {
 		return ErrReasoningModelLimitationsOther
 	}
-	if request.TopP > 0 && request.TopP != 1 {
+	if request.TopP != nil && *request.TopP > 0 && *request.TopP != 1 {
 		return ErrReasoningModelLimitationsOther
 	}
 	if request.N > 0 && request.N != 1 {
