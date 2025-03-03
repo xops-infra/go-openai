@@ -37,6 +37,8 @@ const (
 	GPT4TurboPreview      = "gpt-4-turbo-preview"
 	GPT4VisionPreview     = "gpt-4-vision-preview"
 	GPT4                  = "gpt-4"
+	GPT4Dot5Preview       = "gpt-4.5-preview"
+	GPT4Dot5Preview0227   = "gpt-4.5-preview-0227"
 	GPT3Dot5Turbo0125     = "gpt-3.5-turbo-0125"
 	GPT3Dot5Turbo1106     = "gpt-3.5-turbo-1106"
 	GPT3Dot5Turbo0613     = "gpt-3.5-turbo-0613"
@@ -116,6 +118,8 @@ var disabledModelsForEndpoints = map[string]map[string]bool{
 		GPT432K:              true,
 		GPT432K0314:          true,
 		GPT432K0613:          true,
+		GPT4Dot5Preview:      true,
+		GPT4Dot5Preview0227:  true,
 	},
 	chatCompletionsSuffix: {
 		CodexCodeDavinci002:     true,
