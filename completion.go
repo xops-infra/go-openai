@@ -10,6 +10,8 @@ import (
 // GPT3 Models are designed for text-based tasks. For code-specific
 // tasks, please refer to the Codex series of models.
 const (
+	O1Pro                   = "o1-pro"
+	O1Pro20250319           = "o1-pro-2025-03-19"
 	O1Mini                  = "o1-mini"
 	O1Mini20240912          = "o1-mini-2024-09-12"
 	O1Preview               = "o1-preview"
@@ -87,6 +89,10 @@ const (
 
 var disabledModelsForEndpoints = map[string]map[string]bool{
 	"/completions": {
+		O1Pro:                   true,
+		O1Pro20250319:           true,
+		O1:                      true,
+		O120241217:              true,
 		O1Mini:                  true,
 		O1Mini20240912:          true,
 		O1Preview:               true,
