@@ -180,6 +180,7 @@ func sendRequestStream[T streamable](client *Client, req *http.Request) (*stream
 	}, nil
 }
 
+
 func (c *Client) setCommonHeaders(req *http.Request) {
 	// https://learn.microsoft.com/en-us/azure/cognitive-services/openai/reference#authentication
 	switch c.config.APIType {
@@ -334,3 +335,16 @@ func containsSubstr(s []string, e string) bool {
 	}
 	return false
 }
+
+func (c *Client) SetBaseUrl(baseURL string) *Client {
+	c.config.BaseURL = baseURL
+	return c
+}
+
+func (c *Client) SetApiKey(apiKey string) *Client {
+	c.config.authToken = apiKey
+	return c
+}
+
+
+
