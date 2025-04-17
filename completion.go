@@ -18,8 +18,12 @@ const (
 	O1Preview20240912       = "o1-preview-2024-09-12"
 	O1                      = "o1"
 	O120241217              = "o1-2024-12-17"
+	O3                      = "o3"
+	O120250416              = "o3-2025-04-16"
 	O3Mini                  = "o3-mini"
 	O3Mini20250131          = "o3-mini-2025-01-31"
+	O4Mini                  = "o4-mini"
+	O4Mini20250416          = "o4-mini-2025-04-16"
 	GPT432K0613             = "gpt-4-32k-0613"
 	GPT432K0314             = "gpt-4-32k-0314"
 	GPT432K                 = "gpt-4-32k"
@@ -99,12 +103,16 @@ var disabledModelsForEndpoints = map[string]map[string]bool{
 		O1Pro20250319:           true,
 		O1:                      true,
 		O120241217:              true,
+		O3:                      true,
+		O120250416:              true,
 		O1Mini:                  true,
 		O1Mini20240912:          true,
 		O1Preview:               true,
 		O1Preview20240912:       true,
 		O3Mini:                  true,
 		O3Mini20250131:          true,
+		O4Mini:                  true,
+		O4Mini20250416:          true,
 		GPT3Dot5Turbo:           true,
 		GPT3Dot5Turbo0301:       true,
 		GPT3Dot5Turbo0613:       true,
