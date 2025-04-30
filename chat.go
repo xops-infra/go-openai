@@ -273,10 +273,10 @@ type ChatCompletionRequest struct {
 
 	// custom fields
 	DoSample *bool `json:"do_sample,omitempty"`
-	ChatTemplateKwages *ChatTemplateKwages `json:"chat_template_kwages,omitempty"`
+	ChatTemplateKwarges *ChatTemplateKwarges `json:"chat_template_kwargs,omitempty"`
 }
 
-type ChatTemplateKwages struct {
+type ChatTemplateKwarges struct {
 	EnabledThinking bool `json:"enabled_thinking,omitempty"`
 }
 
