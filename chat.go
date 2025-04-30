@@ -277,7 +277,7 @@ type ChatCompletionRequest struct {
 }
 
 type ChatTemplateKwargs struct {
-	EnableThinking bool `json:"enable_thinking,omitempty"`
+	EnableThinking *bool `json:"enable_thinking,omitempty"`
 }
 
 type StreamOptions struct {
