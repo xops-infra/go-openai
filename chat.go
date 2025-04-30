@@ -272,12 +272,12 @@ type ChatCompletionRequest struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 
 	// custom fields
-	DoSample *bool `json:"do_sample,omitempty"`
+	DoSample           *bool               `json:"do_sample,omitempty"`
 	ChatTemplateKwargs *ChatTemplateKwargs `json:"chat_template_kwargs,omitempty"`
 }
 
 type ChatTemplateKwargs struct {
-	EnabledThinking bool `json:"enabled_thinking,omitempty"`
+	EnableThinking bool `json:"enable_thinking,omitempty"`
 }
 
 type StreamOptions struct {
