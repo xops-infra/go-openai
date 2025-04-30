@@ -270,6 +270,14 @@ type ChatCompletionRequest struct {
 	ReasoningEffort string `json:"reasoning_effort,omitempty"`
 	// Metadata to store with the completion.
 	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// custom fields
+	DoSample *bool `json:"do_sample,omitempty"`
+	ChatTemplateKwages *ChatTemplateKwages `json:"chat_template_kwages,omitempty"`
+}
+
+type ChatTemplateKwages struct {
+	EnabledThinking bool `json:"enabled_thinking,omitempty"`
 }
 
 type StreamOptions struct {
