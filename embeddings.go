@@ -46,27 +46,29 @@ const (
 // between two inputs in the original format. For example, if two texts are similar,
 // then their vector representations should also be similar.
 type Embedding struct {
-	Object    string    `json:"object"`
-	Embedding []float32 `json:"embedding"`
-	Index     int       `json:"index"`
+	Object string `json:"object"`
+	// Embedding []float32 `json:"embedding"`
+	Embedding any `json:"embedding"`
+
+	Index int `json:"index"`
 }
 
 // DotProduct calculates the dot product of the embedding vector with another
 // embedding vector. Both vectors must have the same length; otherwise, an
 // ErrVectorLengthMismatch is returned. The method returns the calculated dot
 // product as a float32 value.
-func (e *Embedding) DotProduct(other *Embedding) (float32, error) {
-	if len(e.Embedding) != len(other.Embedding) {
-		return 0, ErrVectorLengthMismatch
-	}
+// func (e *Embedding) DotProduct(other *Embedding) (float32, error) {
+// 	if len(e.Embedding) != len(other.Embedding) {
+// 		return 0, ErrVectorLengthMismatch
+// 	}
 
-	var dotProduct float32
-	for i := range e.Embedding {
-		dotProduct += e.Embedding[i] * other.Embedding[i]
-	}
+// 	var dotProduct float32
+// 	for i := range e.Embedding {
+// 		dotProduct += e.Embedding[i] * other.Embedding[i]
+// 	}
 
-	return dotProduct, nil
-}
+// 	return dotProduct, nil
+// }
 
 // EmbeddingResponse is the response from a Create embeddings request.
 type EmbeddingResponse struct {
@@ -250,18 +252,19 @@ func (c *Client) CreateEmbeddings(
 	if err != nil {
 		return
 	}
-
-	if baseReq.EncodingFormat != EmbeddingEncodingFormatBase64 {
-		err = c.sendRequest(req, &res)
-		return
-	}
-
-	base64Response := &EmbeddingResponseBase64{}
-	err = c.sendRequest(req, base64Response)
-	if err != nil {
-		return
-	}
-
-	res, err = base64Response.ToEmbeddingResponse()
+	err = c.sendRequest(req, &res)
 	return
+	// if baseReq.EncodingFormat != EmbeddingEncodingFormatBase64 {
+	// 	err = c.sendRequest(req, &res)
+	// 	return
+	// }
+
+	// base64Response := &EmbeddingResponseBase64{}
+	// err = c.sendRequest(req, base64Response)
+	// if err != nil {
+	// 	return
+	// }
+
+	// res, err = base64Response.ToEmbeddingResponse()
+	// return
 }

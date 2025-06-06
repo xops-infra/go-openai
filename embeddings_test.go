@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"math"
 	"net/http"
 	"reflect"
 	"testing"
@@ -246,38 +244,38 @@ func TestEmbeddingResponseBase64_ToEmbeddingResponse(t *testing.T) {
 	}
 }
 
-func TestDotProduct(t *testing.T) {
-	v1 := &openai.Embedding{Embedding: []float32{1, 2, 3}}
-	v2 := &openai.Embedding{Embedding: []float32{2, 4, 6}}
-	expected := float32(28.0)
+// func TestDotProduct(t *testing.T) {
+// 	v1 := &openai.Embedding{Embedding: []float32{1, 2, 3}}
+// 	v2 := &openai.Embedding{Embedding: []float32{2, 4, 6}}
+// 	expected := float32(28.0)
 
-	result, err := v1.DotProduct(v2)
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	}
+// 	result, err := v1.DotProduct(v2)
+// 	if err != nil {
+// 		t.Errorf("Unexpected error: %v", err)
+// 	}
 
-	if math.Abs(float64(result-expected)) > 1e-12 {
-		t.Errorf("Unexpected result. Expected: %v, but got %v", expected, result)
-	}
+// 	if math.Abs(float64(result-expected)) > 1e-12 {
+// 		t.Errorf("Unexpected result. Expected: %v, but got %v", expected, result)
+// 	}
 
-	v1 = &openai.Embedding{Embedding: []float32{1, 0, 0}}
-	v2 = &openai.Embedding{Embedding: []float32{0, 1, 0}}
-	expected = float32(0.0)
+// 	v1 = &openai.Embedding{Embedding: []float32{1, 0, 0}}
+// 	v2 = &openai.Embedding{Embedding: []float32{0, 1, 0}}
+// 	expected = float32(0.0)
 
-	result, err = v1.DotProduct(v2)
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	}
+// 	result, err = v1.DotProduct(v2)
+// 	if err != nil {
+// 		t.Errorf("Unexpected error: %v", err)
+// 	}
 
-	if math.Abs(float64(result-expected)) > 1e-12 {
-		t.Errorf("Unexpected result. Expected: %v, but got %v", expected, result)
-	}
+// 	if math.Abs(float64(result-expected)) > 1e-12 {
+// 		t.Errorf("Unexpected result. Expected: %v, but got %v", expected, result)
+// 	}
 
-	// Test for VectorLengthMismatchError
-	v1 = &openai.Embedding{Embedding: []float32{1, 0, 0}}
-	v2 = &openai.Embedding{Embedding: []float32{0, 1}}
-	_, err = v1.DotProduct(v2)
-	if !errors.Is(err, openai.ErrVectorLengthMismatch) {
-		t.Errorf("Expected Vector Length Mismatch Error, but got: %v", err)
-	}
-}
+// 	// Test for VectorLengthMismatchError
+// 	v1 = &openai.Embedding{Embedding: []float32{1, 0, 0}}
+// 	v2 = &openai.Embedding{Embedding: []float32{0, 1}}
+// 	_, err = v1.DotProduct(v2)
+// 	if !errors.Is(err, openai.ErrVectorLengthMismatch) {
+// 		t.Errorf("Expected Vector Length Mismatch Error, but got: %v", err)
+// 	}
+// }
