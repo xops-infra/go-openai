@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-
-	"github.com/xops-infra/go-openai/jsonschema"
 )
 
 // Chat message role defined by the OpenAI API.
@@ -156,12 +154,12 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 
 func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 	msg := struct {
-		Role             string  `json:"role"`
-		Content          string  `json:"content"`
-		Refusal          string  `json:"refusal,omitempty"`
+		Role             string `json:"role"`
+		Content          string `json:"content"`
+		Refusal          string `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart
 		Name             string        `json:"name,omitempty"`
-		ReasoningContent *string `json:"reasoning_content,omitempty"`
+		ReasoningContent *string       `json:"reasoning_content,omitempty"`
 		FunctionCall     *FunctionCall `json:"function_call,omitempty"`
 		ToolCalls        []ToolCall    `json:"tool_calls,omitempty"`
 		ToolCallID       string        `json:"tool_call_id,omitempty"`
@@ -217,10 +215,10 @@ type ChatCompletionResponseFormat struct {
 }
 
 type ChatCompletionResponseFormatJSONSchema struct {
-	Name        string                `json:"name"`
-	Description string                `json:"description,omitempty"`
-	Schema      jsonschema.Definition `json:"schema"`
-	Strict      bool                  `json:"strict"`
+	Name        string         `json:"name"`
+	Description string         `json:"description,omitempty"`
+	Schema      json.Marshaler `json:"schema"`
+	Strict      bool           `json:"strict"`
 }
 
 // ChatCompletionRequest represents a request structure for chat completion API.
