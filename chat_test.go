@@ -875,7 +875,7 @@ func handleDeepseekR1ChatCompletionEndpoint(w http.ResponseWriter, r *http.Reque
 		res.Choices = append(res.Choices, openai.ChatCompletionChoice{
 			Message: openai.ChatCompletionMessage{
 				Role:             openai.ChatMessageRoleAssistant,
-				ReasoningContent: reasoningContent,
+				ReasoningContent: &reasoningContent,
 				Content:          completionStr,
 			},
 			Index: i,

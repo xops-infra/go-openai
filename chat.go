@@ -95,11 +95,10 @@ type ChatMessagePart struct {
 }
 
 type ChatCompletionMessage struct {
-	Role             string  `json:"role"`
-	Content          string  `json:"content"`
-	ReasoningContent *string `json:"reasoning_content,omitempty"`
-	Refusal          string  `json:"refusal,omitempty"`
-	MultiContent     []ChatMessagePart
+	Role         string `json:"role"`
+	Content      string `json:"content"`
+	Refusal      string `json:"refusal,omitempty"`
+	MultiContent []ChatMessagePart
 
 	// This property isn't in the official documentation, but it's in
 	// the documentation for the official library for python:
@@ -111,7 +110,7 @@ type ChatCompletionMessage struct {
 	// which is not in the official documentation.
 	// the doc from deepseek:
 	// - https://api-docs.deepseek.com/api/create-chat-completion#responses
-	ReasoningContent string `json:"reasoning_content,omitempty"`
+	ReasoningContent *string `json:"reasoning_content,omitempty"`
 
 	FunctionCall *FunctionCall `json:"function_call,omitempty"`
 
@@ -130,10 +129,10 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 		msg := struct {
 			Role             string            `json:"role"`
 			Content          string            `json:"-"`
-			ReasoningContent *string           `json:"reasoning_content,omitempty"`
 			Refusal          string            `json:"refusal,omitempty"`
 			MultiContent     []ChatMessagePart `json:"content,omitempty"`
 			Name             string            `json:"name,omitempty"`
+			ReasoningContent *string           `json:"reasoning_content,omitempty"`
 			FunctionCall     *FunctionCall     `json:"function_call,omitempty"`
 			ToolCalls        []ToolCall        `json:"tool_calls,omitempty"`
 			ToolCallID       string            `json:"tool_call_id,omitempty"`
@@ -144,10 +143,10 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 	msg := struct {
 		Role             string            `json:"role"`
 		Content          string            `json:"content"`
-		ReasoningContent *string           `json:"reasoning_content,omitempty"`
 		Refusal          string            `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart `json:"-"`
 		Name             string            `json:"name,omitempty"`
+		ReasoningContent *string           `json:"reasoning_content,omitempty"`
 		FunctionCall     *FunctionCall     `json:"function_call,omitempty"`
 		ToolCalls        []ToolCall        `json:"tool_calls,omitempty"`
 		ToolCallID       string            `json:"tool_call_id,omitempty"`
@@ -159,10 +158,10 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 	msg := struct {
 		Role             string  `json:"role"`
 		Content          string  `json:"content"`
-		ReasoningContent *string `json:"reasoning_content,omitempty"`
 		Refusal          string  `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart
 		Name             string        `json:"name,omitempty"`
+		ReasoningContent *string `json:"reasoning_content,omitempty"`
 		FunctionCall     *FunctionCall `json:"function_call,omitempty"`
 		ToolCalls        []ToolCall    `json:"tool_calls,omitempty"`
 		ToolCallID       string        `json:"tool_call_id,omitempty"`
@@ -175,10 +174,10 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 	multiMsg := struct {
 		Role             string `json:"role"`
 		Content          string
-		ReasoningContent *string           `json:"reasoning_content,omitempty"`
 		Refusal          string            `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart `json:"content"`
 		Name             string            `json:"name,omitempty"`
+		ReasoningContent *string           `json:"reasoning_content,omitempty"`
 		FunctionCall     *FunctionCall     `json:"function_call,omitempty"`
 		ToolCalls        []ToolCall        `json:"tool_calls,omitempty"`
 		ToolCallID       string            `json:"tool_call_id,omitempty"`
@@ -278,14 +277,14 @@ type ChatCompletionRequest struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// Configuration for a predicted output.
 	Prediction *Prediction `json:"prediction,omitempty"`
-	
-	DoSample           *bool               `json:"do_sample,omitempty"`
+
+	DoSample *bool `json:"do_sample,omitempty"`
 	// ChatTemplateKwargs provides a way to add non-standard parameters to the request body.
 	// Additional kwargs to pass to the template renderer. Will be accessible by the chat template.
 	// Such as think mode for qwen3. "chat_template_kwargs": {"enable_thinking": false}
 	// https://qwen.readthedocs.io/en/latest/deployment/vllm.html#thinking-non-thinking-modes
 	// custom fields
-	ChatTemplateKwargs  map[string]any `json:"chat_template_kwargs,omitempty"`
+	ChatTemplateKwargs map[string]any `json:"chat_template_kwargs,omitempty"`
 }
 
 type StreamOptions struct {
