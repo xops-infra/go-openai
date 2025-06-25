@@ -2,7 +2,6 @@ package openai
 
 import (
 	"errors"
-	"strings"
 )
 
 var (
@@ -38,17 +37,17 @@ func NewReasoningValidator() *ReasoningValidator {
 
 // Validate performs all validation checks for o-series models.
 func (v *ReasoningValidator) Validate(request ChatCompletionRequest) error {
-	o1Series := strings.HasPrefix(request.Model, "o1")
-	o3Series := strings.HasPrefix(request.Model, "o3")
-	o4Series := strings.HasPrefix(request.Model, "o4")
+	// o1Series := strings.HasPrefix(request.Model, "o1")
+	// o3Series := strings.HasPrefix(request.Model, "o3")
+	// o4Series := strings.HasPrefix(request.Model, "o4")
 
-	if !o1Series && !o3Series && !o4Series {
-		return nil
-	}
+	// if !o1Series && !o3Series && !o4Series {
+	// 	return nil
+	// }
 
-	if err := v.validateReasoningModelParams(request); err != nil {
-		return err
-	}
+	// if err := v.validateReasoningModelParams(request); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
