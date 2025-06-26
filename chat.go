@@ -283,6 +283,7 @@ type ChatCompletionRequest struct {
 	// https://qwen.readthedocs.io/en/latest/deployment/vllm.html#thinking-non-thinking-modes
 	// custom fields
 	ChatTemplateKwargs map[string]any `json:"chat_template_kwargs,omitempty"`
+	TopK               *int           `json:"top_k,omitempty"`
 }
 
 type StreamOptions struct {
