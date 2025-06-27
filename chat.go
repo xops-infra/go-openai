@@ -284,6 +284,7 @@ type ChatCompletionRequest struct {
 	// custom fields
 	ChatTemplateKwargs map[string]any `json:"chat_template_kwargs,omitempty"`
 	TopK               *int           `json:"top_k,omitempty"`
+	RepetitionPenalty  *float64       `json:"repetition_penalty,omitempty"`
 }
 
 type StreamOptions struct {
