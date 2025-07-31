@@ -5,6 +5,7 @@ package openai
 // Usage Represents the total token usage per request to OpenAI.
 type Usage struct {
 	PromptTokens            int                      `json:"prompt_tokens"`
+	ImageTokens             int                      `json:"image_tokens"`
 	CompletionTokens        int                      `json:"completion_tokens"`
 	ThinkingTokens          int                      `json:"thinking_tokens"`
 	TotalTokens             int                      `json:"total_tokens"`
