@@ -23,6 +23,8 @@ type CompletionTokensDetails struct {
 
 // PromptTokensDetails Breakdown of tokens used in the prompt.
 type PromptTokensDetails struct {
-	AudioTokens  int `json:"audio_tokens"`
-	CachedTokens int `json:"cached_tokens"`
+	AudioTokens          int `json:"audio_tokens"`
+	CachedTokens         int `json:"cached_tokens"`
+	CachedCreationTokens int `json:"cached_creation_tokens"` // anthropic specific
+	CacheReadTokens      int `json:"cache_read_tokens"`      // anthropic specific
 }
