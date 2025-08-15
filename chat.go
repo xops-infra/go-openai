@@ -285,6 +285,8 @@ type ChatCompletionRequest struct {
 	ChatTemplateKwargs map[string]any `json:"chat_template_kwargs,omitempty"`
 	TopK               *int           `json:"top_k,omitempty"`
 	RepetitionPenalty  *float64       `json:"repetition_penalty,omitempty"`
+	MinP               *float64       `json:"min_p,omitempty" swaggerignore:"true"`
+	StopTokenIDS       []string       `json:"stop_token_ids,omitempty" swaggerignore:"true"`
 }
 
 type StreamOptions struct {
