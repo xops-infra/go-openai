@@ -162,11 +162,11 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 		Content          string `json:"content"`
 		Refusal          string `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart
-		Name             string        `json:"name,omitempty"`
-		ReasoningContent *string       `json:"reasoning_content,omitempty"`
-		FunctionCall     *FunctionCall `json:"function_call,omitempty"`
-		ToolCalls        []ToolCall    `json:"tool_calls,omitempty"`
-		ToolCallID       string        `json:"tool_call_id,omitempty"`
+		Name             string         `json:"name,omitempty"`
+		ReasoningContent *string        `json:"reasoning_content,omitempty"`
+		FunctionCall     *FunctionCall  `json:"function_call,omitempty"`
+		ToolCalls        []ToolCall     `json:"tool_calls,omitempty"`
+		ToolCallID       string         `json:"tool_call_id,omitempty"`
 		ThinkingBlock    *ThinkingBlock `json:"thinking_block,omitempty"`
 	}{}
 
@@ -293,6 +293,7 @@ type ChatCompletionRequest struct {
 	RepetitionPenalty  *float64       `json:"repetition_penalty,omitempty"`
 	MinP               *float64       `json:"min_p,omitempty" swaggerignore:"true"`
 	StopTokenIDS       []string       `json:"stop_token_ids,omitempty" swaggerignore:"true"`
+	Thinking           map[string]any `json:"thinking,omitempty"` //deepseek v3.1
 }
 
 type StreamOptions struct {
