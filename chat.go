@@ -118,7 +118,8 @@ type ChatCompletionMessage struct {
 	// For Role=tool prompts this should be set to the ID given in the assistant's prior request to call a tool.
 	ToolCallID string `json:"tool_call_id,omitempty"`
 
-	ThinkingBlock *ThinkingBlock `json:"thinking_block,omitempty"`
+	ThinkingBlock *ThinkingBlock       `json:"thinking_block,omitempty"`
+	Image         *ChatMessageImageURL `json:"image,omitempty"`
 }
 
 func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
@@ -127,31 +128,33 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 	}
 	if len(m.MultiContent) > 0 {
 		msg := struct {
-			Role             string            `json:"role"`
-			Content          string            `json:"-"`
-			Refusal          string            `json:"refusal,omitempty"`
-			MultiContent     []ChatMessagePart `json:"content,omitempty"`
-			Name             string            `json:"name,omitempty"`
-			ReasoningContent *string           `json:"reasoning_content,omitempty"`
-			FunctionCall     *FunctionCall     `json:"function_call,omitempty"`
-			ToolCalls        []ToolCall        `json:"tool_calls,omitempty"`
-			ToolCallID       string            `json:"tool_call_id,omitempty"`
-			ThinkingBlock    *ThinkingBlock    `json:"thinking_block,omitempty"`
+			Role             string               `json:"role"`
+			Content          string               `json:"-"`
+			Refusal          string               `json:"refusal,omitempty"`
+			MultiContent     []ChatMessagePart    `json:"content,omitempty"`
+			Name             string               `json:"name,omitempty"`
+			ReasoningContent *string              `json:"reasoning_content,omitempty"`
+			FunctionCall     *FunctionCall        `json:"function_call,omitempty"`
+			ToolCalls        []ToolCall           `json:"tool_calls,omitempty"`
+			ToolCallID       string               `json:"tool_call_id,omitempty"`
+			ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
+			Image            *ChatMessageImageURL `json:"image,omitempty"`
 		}(m)
 		return json.Marshal(msg)
 	}
 
 	msg := struct {
-		Role             string            `json:"role"`
-		Content          string            `json:"content"`
-		Refusal          string            `json:"refusal,omitempty"`
-		MultiContent     []ChatMessagePart `json:"-"`
-		Name             string            `json:"name,omitempty"`
-		ReasoningContent *string           `json:"reasoning_content,omitempty"`
-		FunctionCall     *FunctionCall     `json:"function_call,omitempty"`
-		ToolCalls        []ToolCall        `json:"tool_calls,omitempty"`
-		ToolCallID       string            `json:"tool_call_id,omitempty"`
-		ThinkingBlock    *ThinkingBlock    `json:"thinking_block,omitempty"`
+		Role             string               `json:"role"`
+		Content          string               `json:"content"`
+		Refusal          string               `json:"refusal,omitempty"`
+		MultiContent     []ChatMessagePart    `json:"-"`
+		Name             string               `json:"name,omitempty"`
+		ReasoningContent *string              `json:"reasoning_content,omitempty"`
+		FunctionCall     *FunctionCall        `json:"function_call,omitempty"`
+		ToolCalls        []ToolCall           `json:"tool_calls,omitempty"`
+		ToolCallID       string               `json:"tool_call_id,omitempty"`
+		ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
+		Image            *ChatMessageImageURL `json:"image,omitempty"`
 	}(m)
 	return json.Marshal(msg)
 }
@@ -162,12 +165,13 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 		Content          string `json:"content"`
 		Refusal          string `json:"refusal,omitempty"`
 		MultiContent     []ChatMessagePart
-		Name             string         `json:"name,omitempty"`
-		ReasoningContent *string        `json:"reasoning_content,omitempty"`
-		FunctionCall     *FunctionCall  `json:"function_call,omitempty"`
-		ToolCalls        []ToolCall     `json:"tool_calls,omitempty"`
-		ToolCallID       string         `json:"tool_call_id,omitempty"`
-		ThinkingBlock    *ThinkingBlock `json:"thinking_block,omitempty"`
+		Name             string               `json:"name,omitempty"`
+		ReasoningContent *string              `json:"reasoning_content,omitempty"`
+		FunctionCall     *FunctionCall        `json:"function_call,omitempty"`
+		ToolCalls        []ToolCall           `json:"tool_calls,omitempty"`
+		ToolCallID       string               `json:"tool_call_id,omitempty"`
+		ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
+		Image            *ChatMessageImageURL `json:"image,omitempty"`
 	}{}
 
 	if err := json.Unmarshal(bs, &msg); err == nil {
@@ -177,14 +181,15 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 	multiMsg := struct {
 		Role             string `json:"role"`
 		Content          string
-		Refusal          string            `json:"refusal,omitempty"`
-		MultiContent     []ChatMessagePart `json:"content"`
-		Name             string            `json:"name,omitempty"`
-		ReasoningContent *string           `json:"reasoning_content,omitempty"`
-		FunctionCall     *FunctionCall     `json:"function_call,omitempty"`
-		ToolCalls        []ToolCall        `json:"tool_calls,omitempty"`
-		ToolCallID       string            `json:"tool_call_id,omitempty"`
-		ThinkingBlock    *ThinkingBlock    `json:"thinking_block,omitempty"`
+		Refusal          string               `json:"refusal,omitempty"`
+		MultiContent     []ChatMessagePart    `json:"content"`
+		Name             string               `json:"name,omitempty"`
+		ReasoningContent *string              `json:"reasoning_content,omitempty"`
+		FunctionCall     *FunctionCall        `json:"function_call,omitempty"`
+		ToolCalls        []ToolCall           `json:"tool_calls,omitempty"`
+		ToolCallID       string               `json:"tool_call_id,omitempty"`
+		ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
+		Image            *ChatMessageImageURL `json:"image,omitempty"`
 	}{}
 	if err := json.Unmarshal(bs, &multiMsg); err != nil {
 		return err

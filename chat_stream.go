@@ -12,13 +12,14 @@ type ThinkingBlock struct {
 }
 
 type ChatCompletionStreamChoiceDelta struct {
-	Content          string         `json:"content,omitempty"`
-	ReasoningContent *string        `json:"reasoning_content"`
-	Role             string         `json:"role,omitempty"`
-	FunctionCall     *FunctionCall  `json:"function_call,omitempty"`
-	ToolCalls        []ToolCall     `json:"tool_calls,omitempty"`
-	Refusal          string         `json:"refusal,omitempty"`
-	ThinkingBlock    *ThinkingBlock `json:"thinking_block,omitempty"`
+	Content          string               `json:"content,omitempty"`
+	ReasoningContent *string              `json:"reasoning_content"`
+	Role             string               `json:"role,omitempty"`
+	FunctionCall     *FunctionCall        `json:"function_call,omitempty"`
+	ToolCalls        []ToolCall           `json:"tool_calls,omitempty"`
+	Refusal          string               `json:"refusal,omitempty"`
+	ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
+	Image            *ChatMessageImageURL `json:"image,omitempty"`
 }
 
 type ChatCompletionStreamChoiceLogprobs struct {
