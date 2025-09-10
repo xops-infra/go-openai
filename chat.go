@@ -299,6 +299,7 @@ type ChatCompletionRequest struct {
 	MinP               *float64       `json:"min_p,omitempty" swaggerignore:"true"`
 	StopTokenIDS       []string       `json:"stop_token_ids,omitempty" swaggerignore:"true"`
 	Thinking           map[string]any `json:"thinking,omitempty"` //deepseek v3.1
+	EnableThinking     *bool          `json:"enable_thinking,omitempty"`
 }
 
 type StreamOptions struct {
