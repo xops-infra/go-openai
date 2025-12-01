@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-
-	"github.com/xops-infra/go-openai/jsonschema"
 )
 
 // Chat message role defined by the OpenAI API.
@@ -241,36 +239,36 @@ type ChatCompletionResponseFormat struct {
 }
 
 type ChatCompletionResponseFormatJSONSchema struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description,omitempty"`
-	Schema      json.Marshaler `json:"schema"`
-	Strict      bool           `json:"strict"`
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+	Schema      any    `json:"schema"`
+	Strict      bool   `json:"strict"`
 }
 
-func (r *ChatCompletionResponseFormatJSONSchema) UnmarshalJSON(data []byte) error {
-	type rawJSONSchema struct {
-		Name        string          `json:"name"`
-		Description string          `json:"description,omitempty"`
-		Schema      json.RawMessage `json:"schema"`
-		Strict      bool            `json:"strict"`
-	}
-	var raw rawJSONSchema
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	r.Name = raw.Name
-	r.Description = raw.Description
-	r.Strict = raw.Strict
-	if len(raw.Schema) > 0 && string(raw.Schema) != "null" {
-		var d jsonschema.Definition
-		err := json.Unmarshal(raw.Schema, &d)
-		if err != nil {
-			return err
-		}
-		r.Schema = &d
-	}
-	return nil
-}
+// func (r *ChatCompletionResponseFormatJSONSchema) UnmarshalJSON(data []byte) error {
+// 	type rawJSONSchema struct {
+// 		Name        string          `json:"name"`
+// 		Description string          `json:"description,omitempty"`
+// 		Schema      json.RawMessage `json:"schema"`
+// 		Strict      bool            `json:"strict"`
+// 	}
+// 	var raw rawJSONSchema
+// 	if err := json.Unmarshal(data, &raw); err != nil {
+// 		return err
+// 	}
+// 	r.Name = raw.Name
+// 	r.Description = raw.Description
+// 	r.Strict = raw.Strict
+// 	if len(raw.Schema) > 0 && string(raw.Schema) != "null" {
+// 		var d jsonschema.Definition
+// 		err := json.Unmarshal(raw.Schema, &d)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		r.Schema = &d
+// 	}
+// 	return nil
+// }
 
 // ChatCompletionRequestExtensions contains third-party OpenAI API extensions
 // (e.g., vendor-specific implementations like vLLM).
