@@ -89,7 +89,7 @@ const (
 
 type ChatMessagePartFile struct {
 	FileID   string `json:"file_id,omitempty"`
-	FileName string `json:"file_name,omitempty"`
+	FileName string `json:"filename,omitempty"`
 	FileData string `json:"file_data,omitempty"`
 }
 
