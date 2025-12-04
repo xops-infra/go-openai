@@ -239,10 +239,10 @@ type ChatCompletionResponseFormat struct {
 }
 
 type ChatCompletionResponseFormatJSONSchema struct {
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
-	Schema      any    `json:"schema"`
-	Strict      bool   `json:"strict"`
+	Name        string          `json:"name"`
+	Description string          `json:"description,omitempty"`
+	Schema      json.RawMessage `json:"schema"`
+	Strict      bool            `json:"strict"`
 }
 
 // func (r *ChatCompletionResponseFormatJSONSchema) UnmarshalJSON(data []byte) error {
@@ -260,12 +260,18 @@ type ChatCompletionResponseFormatJSONSchema struct {
 // 	r.Description = raw.Description
 // 	r.Strict = raw.Strict
 // 	if len(raw.Schema) > 0 && string(raw.Schema) != "null" {
+// 		// 先尝试解析为 Definition（更高效）
 // 		var d jsonschema.Definition
-// 		err := json.Unmarshal(raw.Schema, &d)
-// 		if err != nil {
+// 		if err := json.Unmarshal(raw.Schema, &d); err == nil {
+// 			r.Schema = &d
+// 			return nil
+// 		}
+// 		// 失败则回退到 map[string]any（更灵活）
+// 		var m map[string]any
+// 		if err := json.Unmarshal(raw.Schema, &m); err != nil {
 // 			return err
 // 		}
-// 		r.Schema = &d
+// 		r.Schema = m
 // 	}
 // 	return nil
 // }
