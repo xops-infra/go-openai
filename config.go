@@ -46,6 +46,7 @@ type ClientConfig struct {
 	APIVersion           string // required when APIType is APITypeAzure or APITypeAzureAD or APITypeAnthropic
 	AssistantVersion     string
 	AzureModelMapperFunc func(model string) string // replace model to azure deployment name func
+	AzureDeployment      string
 	HTTPClient           HTTPDoer
 	AzureResourceName    string
 
@@ -66,12 +67,20 @@ func DefaultConfig(authToken string) ClientConfig {
 	}
 }
 
-func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
+func DefaultAzureConfig(apiKey, apiVersion, baseURL, resource string) ClientConfig {
+	if apiVersion == "" {
+		apiVersion = azureDefaultApiVersion
+	}
+
+	if baseURL == "" {
+		baseURL = azureApiBaseURL
+	}
 	return ClientConfig{
-		authToken:  apiKey,
-		OrgID:      "",
-		APIType:    APITypeAzure,
-		APIVersion: "2023-05-15",
+		authToken:         apiKey,
+		BaseURL:           baseURL,
+		AzureResourceName: resource,
+		APIType:           APITypeAzure,
+		APIVersion:        apiVersion,
 		AzureModelMapperFunc: func(model string) string {
 			// only 3.5 models have the "." stripped in their names
 			if strings.Contains(model, "3.5") {

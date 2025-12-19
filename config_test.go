@@ -53,7 +53,7 @@ func TestGetAzureDeploymentByModel(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Model, func(t *testing.T) {
-			conf := openai.DefaultAzureConfig("", "https://test.openai.azure.com/")
+			conf := openai.DefaultAzureConfig("", "2023-05-15", "https://test.openai.azure.com/", "test")
 			if c.AzureModelMapperFunc != nil {
 				conf.AzureModelMapperFunc = c.AzureModelMapperFunc
 			}

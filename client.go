@@ -247,6 +247,7 @@ func decodeString(body io.Reader, output *string) error {
 
 type fullURLOptions struct {
 	model string
+	deployment string
 }
 
 type fullURLOption func(*fullURLOptions)
@@ -308,6 +309,10 @@ func (c *Client) baseURLWithAzureDeployment(baseURL, suffix, model string) (newB
 	baseURL = fmt.Sprintf("%s/%s", strings.TrimRight(baseURL, "/"), azureAPIPrefix)
 	if containsSubstr(azureDeploymentsEndpoints, suffix) {
 		azureDeploymentName := c.config.GetAzureDeploymentByModel(model)
+		if c.config.AzureDeployment != "" {
+			azureDeploymentName = c.config.AzureDeployment
+		}
+
 		if azureDeploymentName == "" {
 			azureDeploymentName = "UNKNOWN"
 		}
@@ -360,5 +365,8 @@ func (c *Client) SetApiKey(apiKey string) *Client {
 	return c
 }
 
-
+func (c *Client) SetAzureDeployment(deployment string) *Client {
+	c.config.AzureDeployment = deployment
+	return c
+}
 

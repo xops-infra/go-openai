@@ -148,7 +148,7 @@ func TestAzureFullURL(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			az := DefaultAzureConfig("dummy", c.BaseURL)
+			az := DefaultAzureConfig("dummy", "2023-05-15", c.BaseURL, "test")
 			cli := NewClientWithConfig(az)
 			// /openai/deployments/{engine}/chat/completions?api-version={api_version}
 			actual := cli.fullURL(c.Suffix, withModel(c.Model))
@@ -185,7 +185,7 @@ func TestCloudflareAzureFullURL(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			az := DefaultAzureConfig("dummy", c.BaseURL)
+			az := DefaultAzureConfig("dummy", "2023-05-15", c.BaseURL, "test")
 			az.APIType = APITypeCloudflareAzure
 
 			cli := NewClientWithConfig(az)

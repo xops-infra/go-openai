@@ -21,7 +21,7 @@ func setupAzureTestServer() (client *openai.Client, server *test.ServerTest, tea
 	ts := server.OpenAITestServer()
 	ts.Start()
 	teardown = ts.Close
-	config := openai.DefaultAzureConfig(test.GetTestToken(), "https://dummylab.openai.azure.com/")
+	config := openai.DefaultAzureConfig(test.GetTestToken(), "2023-05-15", "https://dummylab.openai.azure.com/", "test")
 	config.BaseURL = ts.URL
 	client = openai.NewClientWithConfig(config)
 	return
