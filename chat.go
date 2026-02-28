@@ -129,6 +129,8 @@ type ChatCompletionMessage struct {
 	ThinkingBlock *ThinkingBlock       `json:"thinking_block,omitempty"`
 	Image         *ChatMessageImageURL `json:"image,omitempty"`
 	File          *ChatMessagePartFile `json:"file,omitempty"`
+	Images        []ChatMessagePart    `json:"images,omitempty"`
+	Files         []ChatMessagePart    `json:"files,omitempty"`
 }
 
 func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
@@ -149,6 +151,8 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 			ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
 			Image            *ChatMessageImageURL `json:"image,omitempty"`
 			File             *ChatMessagePartFile `json:"file,omitempty"`
+			Images           []ChatMessagePart    `json:"images,omitempty"`
+			Files            []ChatMessagePart    `json:"files,omitempty"`
 		}(m)
 		return json.Marshal(msg)
 	}
@@ -166,6 +170,8 @@ func (m ChatCompletionMessage) MarshalJSON() ([]byte, error) {
 		ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
 		Image            *ChatMessageImageURL `json:"image,omitempty"`
 		File             *ChatMessagePartFile `json:"file,omitempty"`
+		Images           []ChatMessagePart    `json:"images,omitempty"`
+		Files            []ChatMessagePart    `json:"files,omitempty"`
 	}(m)
 	return json.Marshal(msg)
 }
@@ -184,6 +190,8 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 		ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
 		Image            *ChatMessageImageURL `json:"image,omitempty"`
 		File             *ChatMessagePartFile `json:"file,omitempty"`
+		Images           []ChatMessagePart    `json:"images,omitempty"`
+		Files            []ChatMessagePart    `json:"files,omitempty"`
 	}{}
 
 	if err := json.Unmarshal(bs, &msg); err == nil {
@@ -203,6 +211,8 @@ func (m *ChatCompletionMessage) UnmarshalJSON(bs []byte) error {
 		ThinkingBlock    *ThinkingBlock       `json:"thinking_block,omitempty"`
 		Image            *ChatMessageImageURL `json:"image,omitempty"`
 		File             *ChatMessagePartFile `json:"file,omitempty"`
+		Images           []ChatMessagePart    `json:"images,omitempty"`
+		Files            []ChatMessagePart    `json:"files,omitempty"`
 	}{}
 	if err := json.Unmarshal(bs, &multiMsg); err != nil {
 		return err
