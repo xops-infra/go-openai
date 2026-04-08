@@ -379,7 +379,7 @@ type ChatCompletionRequest struct {
 	Thinking          map[string]any `json:"thinking,omitempty"` //deepseek v3.1
 	EnableThinking    *bool          `json:"enable_thinking,omitempty"`
 	SkipSpecialTokens *bool          `json:"skip_special_tokens,omitempty" swaggertype:"bool"` // skip special token
-
+	ThinkingBudget    *int           `json:"thinking_budget,omitempty"`
 	// Embedded struct for non-OpenAI extensions
 	ChatCompletionRequestExtensions
 }
