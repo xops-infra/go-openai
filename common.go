@@ -19,8 +19,8 @@ type CostDetails struct {
 	PromptCost        float64 `json:"prompt_cost,omitempty"`
 	CompletionCost    float64 `json:"completion_cost,omitempty"`
 	ReasoningCost     float64 `json:"reasoning_cost,omitempty"`
-	CacedCost         float64 `json:"caced_cost,omitempty"`
-	CacedCreationCost float64 `json:"caced_creation_cost,omitempty"`
+	CachedCost         float64 `json:"cached_cost,omitempty"`
+	CachedCreationCost float64 `json:"cached_creation_cost,omitempty"`
 }
 
 // CompletionTokensDetails Breakdown of tokens used in a completion.
