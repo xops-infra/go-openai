@@ -11,13 +11,14 @@ import (
 // APIError provides error information returned by the OpenAI API.
 // InnerError struct is only valid for Azure OpenAI Service.
 type APIError struct {
-	Code           any         `json:"code,omitempty"`
-	Message        string      `json:"message"`
-	Param          *string     `json:"param,omitempty"`
-	Type           string      `json:"type"`
-	HTTPStatus     string      `json:"-"`
-	HTTPStatusCode int         `json:"-"`
-	InnerError     *InnerError `json:"innererror,omitempty"`
+	Code           any            `json:"code,omitempty"`
+	Message        string         `json:"message"`
+	Param          *string        `json:"param,omitempty"`
+	Type           string         `json:"type"`
+	Metadata       map[string]any `json:"metadata,omitempty"`
+	HTTPStatus     string         `json:"-"`
+	HTTPStatusCode int            `json:"-"`
+	InnerError     *InnerError    `json:"innererror,omitempty"`
 }
 
 // InnerError Azure Content filtering. Only valid for Azure OpenAI Service.
@@ -50,13 +51,14 @@ func (e *ErrorResponse) UnmarshalJSON(data []byte) (err error) {
 	// adpter deepseek error
 	if gjson.GetBytes(data, "detail").Exists() {
 		apiErr := struct {
-			Code           any         `json:"code,omitempty"`
-			Message        string      `json:"detail"`
-			Param          *string     `json:"param,omitempty"`
-			Type           string      `json:"type"`
-			HTTPStatus     string      `json:"-"`
-			HTTPStatusCode int         `json:"-"`
-			InnerError     *InnerError `json:"innererror,omitempty"`
+			Code           any            `json:"code,omitempty"`
+			Message        string         `json:"detail"`
+			Param          *string        `json:"param,omitempty"`
+			Type           string         `json:"type"`
+			Metadata       map[string]any `json:"metadata,omitempty"`
+			HTTPStatus     string         `json:"-"`
+			HTTPStatusCode int            `json:"-"`
+			InnerError     *InnerError    `json:"innererror,omitempty"`
 		}{}
 
 		err = json.Unmarshal(data, &apiErr)
@@ -102,6 +104,23 @@ func (e *APIError) UnmarshalJSON(data []byte) (err error) {
 		err = json.Unmarshal(rawMap["innererror"], &e.InnerError)
 		if err != nil {
 			return
+		}
+	}
+
+	if _, ok := rawMap["metadata"]; ok {
+		err = json.Unmarshal(rawMap["metadata"], &e.Metadata)
+		if err != nil {
+			return
+		}
+
+		if raw, ok := e.Metadata["raw"]; ok {
+			if rawStr, ok := raw.(string); ok && rawStr != "" {
+				if e.Message != "" {
+					e.Message = e.Message + ": " + rawStr
+				} else {
+					e.Message = rawStr
+				}
+			}
 		}
 	}
 
