@@ -82,9 +82,10 @@ type ChatMessageImageURL struct {
 type ChatMessagePartType string
 
 const (
-	ChatMessagePartTypeText     ChatMessagePartType = "text"
-	ChatMessagePartTypeImageURL ChatMessagePartType = "image_url"
-	ChatMessagePartTypeFile     ChatMessagePartType = "file"
+	ChatMessagePartTypeText       ChatMessagePartType = "text"
+	ChatMessagePartTypeImageURL   ChatMessagePartType = "image_url"
+	ChatMessagePartTypeFile       ChatMessagePartType = "file"
+	ChatMessagePartTypeInputAudio ChatMessagePartType = "input_audio"
 )
 
 type ChatMessagePartFile struct {
