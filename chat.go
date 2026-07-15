@@ -97,13 +97,18 @@ type ChatMessagePartVideoURL struct {
 	URL string `json:"url,omitempty"`
 }
 
+type ChatMessagePartAudio struct {
+	Data   string `json:"url,omitempty"`
+	Format string `json:"format,omitempty"`
+}
+
 type ChatMessagePart struct {
-	Type     ChatMessagePartType  `json:"type,omitempty"`
-	Text     string               `json:"text,omitempty"`
-	ImageURL *ChatMessageImageURL `json:"image_url,omitempty"`
-	File     *ChatMessagePartFile `json:"file,omitempty"`
-	// InputAudio *ChatMessagePartAudio    `json:"input_audio,omitempty"`
-	VideoURL *ChatMessagePartVideoURL `json:"video_url,omitempty"`
+	Type       ChatMessagePartType      `json:"type,omitempty"`
+	Text       string                   `json:"text,omitempty"`
+	ImageURL   *ChatMessageImageURL     `json:"image_url,omitempty"`
+	File       *ChatMessagePartFile     `json:"file,omitempty"`
+	InputAudio *ChatMessagePartAudio    `json:"input_audio,omitempty"`
+	VideoURL   *ChatMessagePartVideoURL `json:"video_url,omitempty"`
 }
 
 type ChatCompletionMessage struct {
