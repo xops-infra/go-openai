@@ -99,7 +99,7 @@ type ChatMessagePartVideoURL struct {
 }
 
 type ChatMessagePartAudio struct {
-	Data   string `json:"url,omitempty"`
+	Data   string `json:"data,omitempty"`
 	Format string `json:"format,omitempty"`
 }
 
