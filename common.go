@@ -16,9 +16,10 @@ type Usage struct {
 }
 
 type CostDetails struct {
-	PromptCost        float64 `json:"prompt_cost,omitempty"`
-	CompletionCost    float64 `json:"completion_cost,omitempty"`
-	ReasoningCost     float64 `json:"reasoning_cost,omitempty"`
+	PromptCost         float64 `json:"prompt_cost,omitempty"`
+	CompletionCost     float64 `json:"completion_cost,omitempty"`
+	ReasoningCost      float64 `json:"reasoning_cost,omitempty"`
+	ImageCost          float64 `json:"image_cost,omitempty"`
 	CachedCost         float64 `json:"cached_cost,omitempty"`
 	CachedCreationCost float64 `json:"cached_creation_cost,omitempty"`
 }
@@ -27,6 +28,7 @@ type CostDetails struct {
 type CompletionTokensDetails struct {
 	AudioTokens              int `json:"audio_tokens,omitempty"`
 	ReasoningTokens          int `json:"reasoning_tokens,omitempty"`
+	ImageTokens              int `json:"image_tokens,omitempty"`
 	AcceptedPredictionTokens int `json:"accepted_prediction_tokens,omitempty"`
 	RejectedPredictionTokens int `json:"rejected_prediction_tokens,omitempty"`
 }
@@ -34,6 +36,7 @@ type CompletionTokensDetails struct {
 // PromptTokensDetails Breakdown of tokens used in the prompt.
 type PromptTokensDetails struct {
 	AudioTokens          int `json:"audio_tokens,omitempty"`
+	ImageTokens          int `json:"image_tokens,omitempty"`
 	CachedTokens         int `json:"cached_tokens,omitempty"`
 	CachedCreationTokens int `json:"cached_creation_tokens,omitempty"` // anthropic specific
 	CacheReadTokens      int `json:"cache_read_tokens,omitempty"`      // anthropic specific
