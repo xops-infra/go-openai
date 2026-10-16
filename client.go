@@ -2,6 +2,7 @@ package openai
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/tidwall/gjson"
 	utils "github.com/xops-infra/go-openai/internal"
 )
 
@@ -152,7 +154,68 @@ func (c *Client) sendRequest(req *http.Request, v Response) error {
 		return c.handleErrorResp(res)
 	}
 
-	return decodeResponse(res.Body, v)
+	if !mayContainEmbeddedError(v) {
+		return decodeResponse(res.Body, v)
+	}
+
+	// Some providers (e.g. OpenRouter) return HTTP 200 with an error payload,
+	// so inspect the body before decoding it into the response struct.
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+	if apiErr := embeddedAPIError(res, body); apiErr != nil {
+		return apiErr
+	}
+	return decodeResponse(bytes.NewReader(body), v)
+}
+
+// mayContainEmbeddedError reports whether v is a response type whose successful
+// payload never has a top-level "error" object, so one can be treated as a failure.
+// Other types (e.g. fine-tuning jobs) legitimately carry an "error" field.
+func mayContainEmbeddedError(v Response) bool {
+	switch v.(type) {
+	case *ChatCompletionResponse, *CompletionResponse:
+		return true
+	default:
+		return false
+	}
+}
+
+// embeddedAPIError returns an error if a 2xx response body is an error payload.
+func embeddedAPIError(resp *http.Response, body []byte) error {
+	errField := gjson.GetBytes(body, "error")
+	if !errField.IsObject() {
+		return nil
+	}
+
+	// A normal completion carries choices. Only treat the payload as an error
+	// when it has a message or lacks choices, so a stray empty "error" object
+	// next to valid choices does not turn a success into a failure.
+	hasMessage := errField.Get("message").String() != ""
+	hasChoices := gjson.GetBytes(body, "choices").Exists()
+	if !hasMessage && hasChoices {
+		return nil
+	}
+
+	var errRes ErrorResponse
+	if err := json.Unmarshal(body, &errRes); err != nil || errRes.Error == nil {
+		return &RequestError{
+			HTTPStatus:     resp.Status,
+			HTTPStatusCode: resp.StatusCode,
+			Err:            err,
+			Body:           body,
+		}
+	}
+
+	errRes.Error.HTTPStatus = resp.Status
+	errRes.Error.HTTPStatusCode = resp.StatusCode
+	// Prefer the status carried in the payload, e.g. "code": 400.
+	if code, ok := errRes.Error.Code.(int); ok && code >= http.StatusBadRequest && code < 600 {
+		errRes.Error.HTTPStatus = fmt.Sprintf("%d %s", code, http.StatusText(code))
+		errRes.Error.HTTPStatusCode = code
+	}
+	return errRes.Error
 }
 
 func (c *Client) sendRequestRaw(req *http.Request) (response RawResponse, err error) {
